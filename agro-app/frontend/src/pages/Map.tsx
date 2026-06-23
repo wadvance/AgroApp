@@ -8,7 +8,6 @@ import {
   Stack,
   TextField,
   Button,
-  Tooltip,
 } from '@mui/material';
 import { Search, MyLocation, DirectionsCar } from '@mui/icons-material';
 
@@ -47,7 +46,7 @@ const Map: React.FC = () => {
       <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
         Mapas y Navegación al Campo
       </Typography>
-      
+
       <Box sx={{ mb: 4 }}>
         <Card className="u-bg-card u-shadow-sm u-transition-normal">
           <CardHeader
@@ -65,9 +64,6 @@ const Map: React.FC = () => {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 onKeyPress={(e) => { if (e.key === 'Enter') handleSearch(); }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 sx={{ flex: 1 }}
               />
               <Stack direction="row" spacing={1}>
@@ -113,7 +109,7 @@ const Map: React.FC = () => {
                   height="100%" 
                   style={{ border: 0 }}
                   loading="lazy"
-                  allowfullscreen
+                  allowFullScreen
                   src={mapUrl}
                 ></iframe>
               </Box>
@@ -140,7 +136,7 @@ const Map: React.FC = () => {
                   height="100%" 
                   style={{ border: 0 }}
                   loading="lazy"
-                  allowfullscreen
+                  allowFullScreen
                   src={directionsUrl}
                 ></iframe>
               </Box>
@@ -154,7 +150,7 @@ const Map: React.FC = () => {
           <Typography variant="h5" color="text.secondary">
             Busca una ubicación para ver el mapa y obtener indicaciones
           </Typography>
-          <Box mt={3}>
+          <Box sx={{ mt: 3 }}>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400 }}>
               Esta característica te permite buscar la ubicación de tu campo agrícola 
               y obtener indicaciones para llegar allí desde tu posición actual.

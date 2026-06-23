@@ -7,7 +7,6 @@ import {
   CardHeader,
   Stack,
   Button,
-  TextField,
   Select,
   MenuItem,
   FormControl,
@@ -18,14 +17,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Alert,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Divider,
 } from '@mui/material';
-import { LocalFlorist, LocalPharmacy, Agriculture, Calculate, Refresh, WarningAmber, CheckCircle } from '@mui/icons-material';
+import { LocalFlorist, LocalPharmacy, Agriculture, Calculate, Refresh, CheckCircle } from '@mui/icons-material';
 
 const Recommendations: React.FC = () => {
   const [cropType, setCropType] = React.useState('maiz');
@@ -115,7 +113,7 @@ const Recommendations: React.FC = () => {
       
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 4 }}>
         {/* Input Section */}
-        <Box xs={12} sm={6} md={4}>
+        <Box sx={{ xs: 12, sm: 6, md: 4 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal">
             <CardHeader
               title="Parámetros del Cultivo"
@@ -134,7 +132,6 @@ const Recommendations: React.FC = () => {
                     label="Tipo de Cultivo"
                     value={cropType}
                     onChange={(e) => setCropType(e.target.value)}
-                    label="Tipo de Cultivo"
                   >
                     <MenuItem value="maiz">
                       Maíz
@@ -164,7 +161,6 @@ const Recommendations: React.FC = () => {
                     label="Etapa de Crecimiento"
                     value={growthStage}
                     onChange={(e) => setGrowthStage(e.target.value)}
-                    label="Etapa de Crecimiento"
                   >
                     <MenuItem value="germinacion">
                       Germinación
@@ -188,7 +184,6 @@ const Recommendations: React.FC = () => {
                     label="Tipo de Suelo"
                     value={soilType}
                     onChange={(e) => setSoilType(e.target.value)}
-                    label="Tipo de Suelo"
                   >
                     <MenuItem value="arenoso">
                       Arenoso
@@ -209,24 +204,24 @@ const Recommendations: React.FC = () => {
                 </FormControl>
               </Stack>
               
-              <Box mt={3} textAlign="center">
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  size="medium"
-                  startIcon={<Refresh fontSize="inherit" />}
-                  onClick={handleGenerateClick}
-                  disabled={loading}
-                >
-                  {loading ? 'Generando...' : 'Generar Recomendaciones'}
-                </Button>
-              </Box>
+               <Box sx={{ mt: 3, textAlign: 'center' }}>
+                 <Button 
+                   variant="contained" 
+                   color="primary" 
+                   size="medium"
+                   startIcon={<Refresh fontSize="inherit" />}
+                   onClick={handleGenerateClick}
+                   disabled={loading}
+                 >
+                   {loading ? 'Generando...' : 'Generar Recomendaciones'}
+                 </Button>
+               </Box>
             </CardContent>
           </Card>
         </Box>
         
         {/* Results Section */}
-        <Box xs={12} sm={6} md={8}>
+        <Box sx={{ xs: 12, sm: 6, md: 8 }}>
           {recommendations ? (
             <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
               <CardHeader
@@ -245,9 +240,9 @@ const Recommendations: React.FC = () => {
                     <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                       Programa de Fertilización
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" mb={2}>
-                      Recomendaciones basadas en análisis de suelo y etapa de cultivo
-                    </Typography>
+                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                       Recomendaciones basadas en análisis de suelo y etapa de cultivo
+                     </Typography>
                     <TableContainer>
                       <Table>
                         <TableHead>
@@ -324,9 +319,9 @@ const Recommendations: React.FC = () => {
                     <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                       Programa de Protección Fitosanitaria
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" mb={2}>
-                      Aplicaciones preventivas y correctivas recomendadas
-                    </Typography>
+                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                       Aplicaciones preventivas y correctivas recomendadas
+                     </Typography>
                     <TableContainer>
                       <Table>
                         <TableHead>
@@ -385,11 +380,11 @@ const Recommendations: React.FC = () => {
                           {recommendations.irrigation.method}
                         </Typography>
                       </div>
-                      <Box mt={2}>
-                        <Typography variant="body2" color="text.secondary">
-                          {recommendations.irrigation.notes}
-                        </Typography>
-                      </Box>
+                       <Box sx={{ mt: 2 }}>
+                         <Typography variant="body2" color="text.secondary">
+                           {recommendations.irrigation.notes}
+                         </Typography>
+                       </Box>
                     </Stack>
                   </Box>
                   
@@ -412,24 +407,22 @@ const Recommendations: React.FC = () => {
                     </List>
                   </Box>
                   
-                  <Box mt={3} textAlign="center">
-                    <Button 
-                      variant="contained" 
-                      color="secondary" 
-                      size="medium"
-                      startIcon={<LocalPharmacy fontSize="inherit" />}
-                    >
-                      Guardar Plan de Manejo
-                    </Button>
-                    <Button 
-                      variant="outlined" 
-                      color="primary" 
-                      size="medium"
-                      startIcon={<LocalFlorist fontSize="inherit" />}
-                    >
-                      Nuevo Ciclo
-                    </Button>
-                  </Box>
+                   <Box sx={{ mt: 3, textAlign: 'center' }}>
+                     <Button 
+                       variant="contained" 
+                       color="secondary" 
+                       size="medium"
+  startIcon={<LocalPharmacy fontSize="inherit" />}>
+                       Guardar Plan de Manejo
+                     </Button>
+                     <Button 
+                       variant="outlined" 
+                       color="primary" 
+                       size="medium"
+  startIcon={<LocalFlorist fontSize="inherit" />}>
+                       Nuevo Ciclo
+                     </Button>
+                   </Box>
                 </Stack>
               </CardContent>
             </Card>
@@ -445,19 +438,19 @@ const Recommendations: React.FC = () => {
                 </Box>
               </CardHeader>
               <CardContent>
-                <Box textAlign="center" py={4}>
+                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h5" color="text.secondary">
                     Aún no se han generado recomendaciones
                   </Typography>
-                  <Box mt={3}>
-                    <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400 }}>
+                   <Box sx={{ mt: 3 }}>
+                     <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400 }}>
                       Complete los campos de tipo de cultivo, etapa de crecimiento y tipo de suelo, 
                       luego haga clic en "Generar Recomendaciones" para obtener un plan de manejo 
                       integral basado en las mejores prácticas agrícolas y recomendaciones específicas 
                       para su situación.
                     </Typography>
                   </Box>
-                  <Box mt={3} textAlign="left" sx={{ maxWidth: 400, marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3, maxWidth: 400 }}>
                     <Typography variant="body2" color="text.primary">
                       • Fertilización balanceada (N-P-K)
                     </Typography>
@@ -482,3 +475,4 @@ const Recommendations: React.FC = () => {
 };
 
 export default Recommendations;
+

@@ -4,15 +4,15 @@ import {
   Typography,
   Card,
   CardContent,
+  CardHeader,
   Stack,
   TextField,
   Button,
-  Chip,
   Avatar,
 } from '@mui/material';
-import { Chat, LocalFlorist, Agriculture, Send, Microphone } from '@mui/icons-material';
+import { Chat as ChatIcon, LocalFlorist, Agriculture, Send, Calculate, Cloud } from '@mui/icons-material';
 
-const Chat: React.FC = () => {
+const ChatPage: React.FC = () => {
   const [messages, setMessages] = React.useState<any[]>([]);
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -109,7 +109,7 @@ const Chat: React.FC = () => {
         <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary mb">
           AgroAsistente IA
         </Typography>
-        <Typography variant="body2" color="text.secondary" mb={3}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
           Su agrónomo virtual disponible 24/7
         </Typography>
         
@@ -177,8 +177,8 @@ const Chat: React.FC = () => {
             <Avatar sx={{ bgcolor: 'var(--green-primary)', ml: -2 }}>
               IA
             </Avatar>
-            <Box ml={2}>
-              <Typography variant="body2" color="text.primary" fontWeight={500}>
+            <Box sx={{ ml: 2 }}>
+              <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>
                 AgroAsistente v1.0
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -198,7 +198,7 @@ const Chat: React.FC = () => {
             className="u-bg-green-primary-light u-text-green-primary-dark"
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Chat fontSize="large" color="primary" />
+              <ChatIcon fontSize="large" color="primary" />
             </Box>
           </CardHeader>
           <CardContent sx={{ flex: 1, p: 2, overflowY: 'auto' }}>
@@ -221,7 +221,7 @@ const Chat: React.FC = () => {
                       color: msg.sender === 'user' ? 'var(--green-primary-dark)' : 'var(--text-primary)'
                     }}
                   >
-                    <Typography variant="body1" wordBreak="break-word">
+                    <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
                       {msg.text}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
@@ -257,9 +257,7 @@ const Chat: React.FC = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                slotProps={{ inputLabel: { shrink: true } }}
                 sx={{ flex: 1 }}
                 disabled={loading}
                 placeholder="Ej: ¿Cuándo debo aplicar fertilizante nitrogenado a mi maíz?"
@@ -269,7 +267,6 @@ const Chat: React.FC = () => {
                 color="primary" 
                 size="medium"
                 startIcon={<Send fontSize="inherit" />}
-                endIcon={<Microphone fontSize="inherit" sx={{ ml: -1 }} />}
                 onClick={sendMessage}
                 disabled={loading || !input.trim()}
               >
@@ -283,4 +280,4 @@ const Chat: React.FC = () => {
   );
 };
 
-export default Chat;
+export default ChatPage;

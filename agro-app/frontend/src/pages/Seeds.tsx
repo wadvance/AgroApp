@@ -1,24 +1,22 @@
 import React from 'react';
 import {
   Box,
+  Grid,
   Typography,
   Card,
   CardContent,
   CardHeader,
   Stack,
   Button,
-  TextField,
-  Typography as MuiTypography,
-  Alert,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Divider,
 } from '@mui/material';
-import { CloudUpload, PhotoCamera, CropRotate, Analytics, SaveAlt } from '@mui/icons-material';
+import { CloudUpload, PhotoCamera, Analytics, SaveAlt } from '@mui/icons-material';
 import { firebaseService } from '../firebase';
 
 const Seeds: React.FC = () => {
@@ -31,18 +29,18 @@ const Seeds: React.FC = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     setLoading(true);
-    
+
     try {
       // Upload image to Firebase Storage
       const imagePath = `seed_images/${Date.now()}_${file.name}`;
       const downloadUrl = await firebaseService.uploadFile(file, imagePath);
       setImageUrl(downloadUrl);
-      
+
       // Simulate API call for AI analysis (in a real app, this would call an AI service)
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Mock analysis result
       const mockResult = {
         seedType: 'Trigo',
@@ -62,7 +60,7 @@ const Seeds: React.FC = () => {
         imageUrl: downloadUrl, // Store the image URL with the result
         analyzedAt: new Date().toISOString()
       };
-      
+
       setAnalysisResult(mockResult);
     } catch (error) {
       console.error('Error analyzing seed image:', error);
@@ -74,17 +72,17 @@ const Seeds: React.FC = () => {
 
   const saveSeedAnalysis = async () => {
     if (!analysisResult) return;
-    
+
     setUploading(true);
     try {
       const seedData = {
         ...analysisResult,
         createdAt: new Date().toISOString()
       };
-      
+
       const result = await firebaseService.createSeed(seedData);
       setSavedSeeds(prev => [result, ...prev]);
-      
+
       // Reset form
       setImageUrl(null);
       setAnalysisResult(null);
@@ -105,7 +103,7 @@ const Seeds: React.FC = () => {
         console.error('Error loading seeds:', error);
       }
     };
-    
+
     loadSavedSeeds();
   }, []);
 
@@ -114,10 +112,10 @@ const Seeds: React.FC = () => {
       <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
         Identificador de Semillas con IA
       </Typography>
-      
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+
+      <Grid container sx={{ gap: 3 }}>
         {/* Upload Section */}
-        <Box xs={12} sm={6} md={4}>
+        <Box sx={{ xs: 12, sm: 6, md: 4 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Subir Imagen"
@@ -129,7 +127,7 @@ const Seeds: React.FC = () => {
               </Box>
             </CardHeader>
             <CardContent>
-              <Stack spacing={2} alignItems="center">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <input
                   type="file"
                   accept="image/*"
@@ -137,20 +135,14 @@ const Seeds: React.FC = () => {
                   id="seed-image-upload"
                   onChange={handleImageUpload}
                 />
-                <label
-                  htmlFor="seed-image-upload"
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  className="u-cursor-pointer u-transition-normal"
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'var(--green-primary-light)',
-                    }
-                  }}
-                >
-                  Seleccionar Imagen
-                </label>
+                <Box sx={{ '&:hover': { backgroundColor: 'var(--green-primary-light)' } }}>
+                  <label
+                    htmlFor="seed-image-upload"
+                    className="u-cursor-pointer u-transition-normal"
+                  >
+                    Seleccionar Imagen
+                  </label>
+                </Box>
                 <Button
                   variant="outlined"
                   color="primary"
@@ -165,20 +157,21 @@ const Seeds: React.FC = () => {
                 <Typography variant="caption" color="text.secondary" align="center">
                   Formatos soportados: JPG, PNG (máx. 5MB)
                 </Typography>
-              </Stack>
-              
+              </Box>
+
               {imageUrl && (
-                <Box mt={3} textAlign="center">
-                  <img 
-                    src={imageUrl} 
-                    alt="Semilla subida" 
-                    sx={{ maxWidth: '100%', maxHeight: 200, borderRadius: 'var(--radius-md)' }}
-                  />
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                  <Box sx={{ maxWidth: '100%', maxHeight: 200, borderRadius: 'var(--radius-md)' }}>
+                    <img
+                      src={imageUrl}
+                      alt="Semilla subida"
+                    />
+                  </Box>
                 </Box>
               )}
-              
+
               {loading && !imageUrl && (
-                <Box mt={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Typography color="text.primary">Analizando imagen...</Typography>
                   &nbsp;
                   <Box sx={{ width: 20, height: 20, borderColor: 'var(--green-primary)', borderStyle: 'solid', borderWidth: '2px', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
@@ -187,9 +180,9 @@ const Seeds: React.FC = () => {
             </CardContent>
           </Card>
         </Box>
-        
+
         {/* Results Section */}
-        <Box xs={12} sm={6} md={8}>
+        <Box sx={{ xs: 12, sm: 6, md: 8 }}>
           {analysisResult ? (
             <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
               <CardHeader
@@ -203,30 +196,30 @@ const Seeds: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <Stack spacing={3}>
-                  <Box textAlign="center">
+                  <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="h3" className="u-font-weight-bold u-text-green-primary">
                       {analysisResult.seedType}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {analysisResult.variety}
                     </Typography>
-                    <Box mt={2}>
+                    <Box sx={{ mt: 2 }}>
                       <div className="u-bg-green-primary-lighter u-rounded-sm" style={{ height: 10 }}>
-                        <div 
-                          className="u-bg-green-primary u-rounded-sm" 
+                        <div
+                          className="u-bg-green-primary u-rounded-sm"
                           style={{ width: `${analysisResult.confidence}%`, height: '100%' }}
                         ></div>
                       </div>
                     </Box>
-                    <Typography variant="caption" color="text.secondary" mt={1}>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
                       Confianza: {analysisResult.confidence}%
                     </Typography>
                   </Box>
-                  
+
                   <Divider sx={{ my: 3 }} />
-                  
+
                   <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
-                    Características Identificadas
+                    Características
                   </Typography>
                   <Stack spacing={1}>
                     {analysisResult.characteristics.map((char: string, index: number) => (
@@ -238,11 +231,11 @@ const Seeds: React.FC = () => {
                           {char}
                         </Typography>
                       </Box>
-                    )}
+                    ))}
                   </Stack>
-                  
+
                   <Divider sx={{ my: 3 }} />
-                  
+
                   <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                     Recomendaciones
                   </Typography>
@@ -258,11 +251,11 @@ const Seeds: React.FC = () => {
                       </Box>
                     ))}
                   </Stack>
-                  
-                  <Box mt={3} textAlign="center">
-                    <Button 
-                      variant="contained" 
-                      color="primary" 
+
+                  <Box sx={{ mt: 3, textAlign: 'center' }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
                       size="medium"
                       startIcon={<SaveAlt fontSize="inherit" />}
                       onClick={saveSeedAnalysis}
@@ -270,9 +263,9 @@ const Seeds: React.FC = () => {
                     >
                       {uploading ? 'Guardando...' : 'Guardar en Biblioteca'}
                     </Button>
-                    <Button 
-                      variant="outlined" 
-                      color="secondary" 
+                    <Button
+                      variant="outlined"
+                      color="secondary"
                       size="medium"
                       startIcon={<PhotoCamera fontSize="inherit" />}
                       onClick={() => {
@@ -298,41 +291,41 @@ const Seeds: React.FC = () => {
                 </Box>
               </CardHeader>
               <CardContent>
-                <Box textAlign="center" py={4}>
+                <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h5" color="text.secondary">
                     Ninguna imagen analizada aún
                   </Typography>
-                  <Box mt={3}>
-                    <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
-                      Utiliza nuestra IA avanzada para identificar variedades de semillas a partir de imágenes. 
-                      Simplemente sube una foto clara de la semilla y nuestro sistema te proporcionará:
-                    </Typography>
-                  </Box>
-                  <Box mt={3} textAlign="left" sx={{ maxWidth: 300, marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Typography variant="body2" color="text.primary">
-                      • Identificación precisa de variedad y especie
-                    </Typography>
-                    <Typography variant="body2" color="text.primary">
-                      • Análisis de características agronómicas
-                    </Typography>
-                    <Typography variant="body2" color="text.primary">
-                      • Recomendaciones de cultivo personalizadas
-                    </Typography>
-                    <Typography variant="body2" color="text.primary">
-                      • Estimación de requisitos de agua y nutrientes
-                    </Typography>
-                  </Box>
+                   <Box sx={{ mt: 3 }}>
+                     <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
+                       Utiliza nuestra IA avanzada para identificar variedades de semillas a partir de imágenes.
+                       Simplemente sube una foto clara de la semilla y nuestro sistema te proporcionará:
+                     </Typography>
+                   </Box>
+                   <Box sx={{ mt: 3, textAlign: 'left', maxWidth: 300, marginLeft: 'auto', marginRight: 'auto' }}>
+                     <Typography variant="body2" color="text.primary">
+                       • Identificación precisa de variedad y especie
+                     </Typography>
+                     <Typography variant="body2" color="text.primary">
+                       • Análisis de características agronómicas
+                     </Typography>
+                     <Typography variant="body2" color="text.primary">
+                       • Recomendaciones de cultivo personalizadas
+                     </Typography>
+                     <Typography variant="body2" color="text.primary">
+                       • Estimación de requisitos de agua y nutrientes
+                     </Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
           )}
         </Box>
-      </Box>
+      </Grid>
       
       {/* Saved Seeds Section */}
       {savedSeeds.length > 0 && (
-        <Box mt={6}>
-          <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary mb">
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary">
             Semillas Analizadas Guardadas
           </Typography>
           <TableContainer>
@@ -354,9 +347,9 @@ const Seeds: React.FC = () => {
                     <TableCell>{seed.confidence}%</TableCell>
                     <TableCell>{new Date(seed.analyzedAt || seed.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <Button 
-                        variant="contained" 
-                        color="primary" 
+                      <Button
+                        variant="contained"
+                        color="primary"
                         size="small"
                         startIcon={<Analytics fontSize="inherit" />}
                       >

@@ -18,12 +18,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Chip,
-  Alert,
-  WarningAmber,
+  Divider,
 } from '@mui/material';
-import { Calculate, LocalFlorist, Agriculture, MonetizationOn, TrendsUp, TrendsDown, SaveAlt } from '@mui/icons-material';
+import { Calculate, LocalFlorist, Agriculture, MonetizationOn, SaveAlt, WarningAmber, Refresh } from '@mui/icons-material';
 
 const Calculator: React.FC = () => {
   const [cropType, setCropType] = React.useState('maiz');
@@ -102,7 +99,7 @@ const Calculator: React.FC = () => {
       
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
         {/* Input Section */}
-        <Box xs={12} sm={6} md={4}>
+        <Box sx={{ width: { xs: '100%', sm: '50%', md: '33.33%' } }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal">
             <CardHeader
               title="Parámetros de Cálculo"
@@ -121,7 +118,6 @@ const Calculator: React.FC = () => {
                     label="Tipo de Cultivo"
                     value={cropType}
                     onChange={(e) => setCropType(e.target.value)}
-                    label="Tipo de Cultivo"
                   >
                     <MenuItem value="maiz">
                       Maíz
@@ -149,12 +145,12 @@ const Calculator: React.FC = () => {
                   <TextField
                     label="Área Cultivada (ha)"
                     type="number"
-                    inputProps={{ min: 0.1, step: 0.1 }}
+                    slotProps={{
+                      htmlInput: { min: 0.1, step: 0.1 },
+                      inputLabel: { shrink: true }
+                    }}
                     value={area}
                     onChange={(e) => setArea(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 </FormControl>
                 
@@ -163,12 +159,12 @@ const Calculator: React.FC = () => {
                   <TextField
                     label="Rendimiento Esperado (kg/ha)"
                     type="number"
-                    inputProps={{ min: 100, step: 10 }}
+                    slotProps={{
+                      htmlInput: { min: 100, step: 10 },
+                      inputLabel: { shrink: true }
+                    }}
                     value={expectedYield}
                     onChange={(e) => setExpectedYield(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 </FormControl>
                 
@@ -177,17 +173,17 @@ const Calculator: React.FC = () => {
                   <TextField
                     label="Precio de Mercado ($/ton)"
                     type="number"
-                    inputProps={{ min: 100, step: 10 }}
+                    slotProps={{
+                      htmlInput: { min: 100, step: 10 },
+                      inputLabel: { shrink: true }
+                    }}
                     value={marketPrice}
                     onChange={(e) => setMarketPrice(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 </FormControl>
               </Stack>
               
-              <Box mt={3} textAlign="center">
+              <Box sx={{ mt: 3, textAlign: 'center' }}>
                 <Button 
                   variant="contained" 
                   color="primary" 
@@ -204,7 +200,7 @@ const Calculator: React.FC = () => {
         </Box>
         
         {/* Results Section */}
-        <Box xs={12} sm={6} md={8}>
+        <Box sx={{ width: { xs: '100%', sm: '50%', md: '66.67%' } }}>
           {calculationResult ? (
             calculationResult.error ? (
               <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
@@ -217,11 +213,11 @@ const Calculator: React.FC = () => {
                   </Box>
                 </CardHeader>
                 <CardContent>
-                  <Box textAlign="center" py={4}>
-                    <Typography variant="h5" color="text.error">
+                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography variant="h5" color="text.error">
                       {calculationResult.error}
                     </Typography>
-                    <Box mt={3}>
+                    <Box sx={{ mt: 3 }}>
                       <Button 
                         variant="outlined" 
                         color="secondary" 
@@ -333,7 +329,7 @@ const Calculator: React.FC = () => {
                       <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                         Sensibilidad al Rendimiento
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" mb={2}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         Variación del ingreso neto según cambios en el rendimiento
                       </Typography>
                       <TableContainer>
@@ -374,7 +370,7 @@ const Calculator: React.FC = () => {
                       </TableContainer>
                     </Box>
                     
-                    <Box mt={3} textAlign="center">
+                    <Box sx={{ mt: 3, textAlign: 'center' }}>
                       <Button 
                         variant="contained" 
                         color="success" 
@@ -408,18 +404,18 @@ const Calculator: React.FC = () => {
                 </Box>
               </CardHeader>
               <CardContent>
-                <Box textAlign="center" py={4}>
+                <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h5" color="text.secondary">
                     Aún no se ha realizado ningún cálculo
                   </Typography>
-                  <Box mt={3}>
+                  <Box sx={{ mt: 3 }}>
                     <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400 }}>
                       Complete el tipo de cultivo, área cultivada, rendimiento esperado y precio de mercado, 
                       luego haga clic en "Calcular Rendimiento" para obtener un análisis detallado de 
                       la viabilidad económica de su proyecto agrícola.
                     </Typography>
                   </Box>
-                  <Box mt={3} textAlign="left" sx={{ maxWidth: 400, marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Box sx={{ mt: 3, textAlign: 'left', maxWidth: 400, marginLeft: 'auto', marginRight: 'auto' }}>
                     <Typography variant="body2" color="text.primary">
                       • Producción total estimada (kg y toneladas)
                     </Typography>

@@ -10,9 +10,7 @@ import {
   ListItemText,
   Divider,
   Box,
-  CssBaseline,
   Button,
-  useTheme,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -25,10 +23,25 @@ import {
   Map as MapIcon,
   Menu as MenuIcon,
 } from '@mui/icons-material';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useResolvedPath, useMatch } from 'react-router-dom';
+
+const SidebarNavItem: React.FC<{to: string; icon: React.ReactNode; label: string; onClick?: () => void}> = ({ to, icon, label, onClick }) => {
+  const resolved = useResolvedPath(to);
+  const match = useMatch({ path: resolved.pathname, end: to === '/' });
+  return (
+    <ListItemButton
+      component={NavLink}
+      to={to}
+      onClick={onClick}
+      className={match ? 'u-bg-green-primary-light u-rounded-md' : 'u-transition-normal'}
+    >
+      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemText primary={label} />
+    </ListItemButton>
+  );
+};
 
 const MainLayout: React.FC = () => {
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -44,160 +57,31 @@ const MainLayout: React.FC = () => {
       </Toolbar>
       <Divider />
       <List>
-        {/* Dashboard */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <DashboardIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItemButton>
+        <SidebarNavItem to="/" icon={<DashboardIcon fontSize="small" />} label="Dashboard" onClick={handleDrawerToggle} />
         
-        {/* Identificador de Semillas */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/seeds" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <LocalFloristIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Semillas" />
-        </ListItemButton>
+        <SidebarNavItem to="/seeds" icon={<LocalFloristIcon fontSize="small" />} label="Semillas" onClick={handleDrawerToggle} />
         
-        {/* Diagnóstico de Cultivos */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/diagnosis" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <AnalyticsIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Diagnóstico" />
-        </ListItemButton>
+        <SidebarNavItem to="/diagnosis" icon={<AnalyticsIcon fontSize="small" />} label="Diagnóstico" onClick={handleDrawerToggle} />
         
-        {/* Recomendaciones */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/recommendations" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <LocalPharmacyIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Recomendaciones" />
-        </ListItemButton>
+        <SidebarNavItem to="/recommendations" icon={<LocalPharmacyIcon fontSize="small" />} label="Recomendaciones" onClick={handleDrawerToggle} />
         
-        {/* Monitor Climático */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/weather" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <CloudIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Clima" />
-        </ListItemButton>
+        <SidebarNavItem to="/weather" icon={<CloudIcon fontSize="small" />} label="Clima" onClick={handleDrawerToggle} />
         
-        {/* Mapas y Navegación */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/map" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <MapIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Mapas" />
-        </ListItemButton>
+        <SidebarNavItem to="/map" icon={<MapIcon fontSize="small" />} label="Mapas" onClick={handleDrawerToggle} />
         
-        {/* Calculadora de Cosecha */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/calculator" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <CalculateIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Calculadora" />
-        </ListItemButton>
+        <SidebarNavItem to="/calculator" icon={<CalculateIcon fontSize="small" />} label="Calculadora" onClick={handleDrawerToggle} />
         
-        {/* Chat IA Agrónomo */}
-        <ListItemButton 
-          component={NavLink} 
-          to="/chat" 
-          endPadding={false}
-          className={({ isActive }) => 
-            isActive 
-              ? 'u-bg-green-primary-light u-rounded-md' 
-              : 'u-transition-normal'
-          }
-          onClick={handleDrawerToggle}
-        >
-          <ListItemIcon>
-            <ChatIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Chat IA" />
-        </ListItemButton>
+        <SidebarNavItem to="/chat" icon={<ChatIcon fontSize="small" />} label="Chat IA" onClick={handleDrawerToggle} />
       </List>
     </div>
   );
 
   return (
     <>
-      <AppBar position="fixed" top={0} elevation={0} className="u-bg-header">
+      <AppBar position="fixed" elevation={0} className="u-bg-header">
         <Toolbar>
           <Button 
             color="inherit" 
-            edge="start" 
             onClick={handleDrawerToggle}
             sx={{ 
               display: { xs: 'block', sm: 'none' }, 

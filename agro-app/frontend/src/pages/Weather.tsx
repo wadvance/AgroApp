@@ -5,20 +5,23 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Stack,
   Button,
+  Alert,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Chip,
   LinearProgress,
-  Grid,
 } from '@mui/material';
-import { Cloud, WeatherSunny, WeatherCloudy, WeatherRainy, Windy, HumidityDrop, Thermostat, Update } from '@mui/icons-material';
+import { 
+  WbSunny,
+  Cloud,
+  CloudDone,
+  Opacity,
+  Update,
+  CheckCircle,
+} from '@mui/icons-material';
 
 const Weather: React.FC = () => {
   const [weatherData, setWeatherData] = React.useState<any>(null);
@@ -79,7 +82,7 @@ const Weather: React.FC = () => {
     
     return () => clearInterval(interval);
   }, []);
-
+  
   const handleRefreshClick = () => {
     fetchWeatherData();
   };
@@ -129,16 +132,16 @@ const Weather: React.FC = () => {
             </Box>
           </CardHeader>
           <CardContent>
-            <Grid container spacing={3}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3 }}>
               {/* Temperature */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Temperatura
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.temperature}°C
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={Math.min(100, Math.max(0, (weatherData.temperature - 10) * 4))} 
@@ -149,14 +152,14 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Humidity */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Humedad Relativa
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.humidity}%
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={weatherData.humidity} 
@@ -167,23 +170,23 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Wind */}
-              <Box xs={12} sm={6} md={3}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Typography variant="body2" color="text.secondary">
                   Viento
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.windSpeed} km/h
                 </Typography>
-                <Box mt={1} display="flex" alignItems="center">
+                <Box sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
                     {weatherData.windDirection}
                   </Typography>
-                  <Box sx={{ width: 20, height: 20, borderColor: 'var(--green-primary)', borderStyle: 'solid' }}>
+                  <Box sx={{ width: 20, height: 20, borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--green-primary)' }}>
                     <div 
-                      sx={{ 
+                      style={{ 
                         width: '60%', 
                         height: '60%', 
-                        bgColor: 'var(--green-primary)', 
+                        backgroundColor: 'var(--green-primary)', 
                         margin: '20% auto', 
                         transform: 'rotate(45deg)' 
                       }}
@@ -193,14 +196,14 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Precipitation */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Precipitación (última hora)
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.precipitation} mm
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={Math.min(100, weatherData.precipitation * 10)} 
@@ -211,14 +214,14 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Pressure */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Presión Atmosférica
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.pressure} hPa
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={Math.min(100, Math.max(0, (weatherData.pressure - 1000) * 3))} 
@@ -229,14 +232,14 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* UV Index */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Índice UV
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.uvIndex}
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={weatherData.uvIndex * 10} 
@@ -247,14 +250,14 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Visibility */}
-              <Box xs={12} sm={6} md={3}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Visibilidad
                 </Typography>
                 <Typography variant="h1" className="u-font-weight-bold">
                   {weatherData.visibility} km
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <LinearProgress 
                     variant="determinate" 
                     value={Math.min(100, weatherData.visibility * 6.67)} 
@@ -265,54 +268,38 @@ const Weather: React.FC = () => {
               </Box>
               
               {/* Condition */}
-              <Box xs={12} sm={6} md={3}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Typography variant="body2" color="text.secondary">
                   Condición
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box sx={{ mt: 2 }}>
                   {weatherData.condition === 'soleado' && (
-                    <>
-                      <WeatherSunny fontSize="large" color="warning" />
-                      <Typography variant="body1" className="u-text-yellow-dark">
-                        Soleado
-                      </Typography>
-                    </>
+                    <WbSunny fontSize="large" color="warning" />
                   )}
                   {weatherData.condition === 'parcialmente nublado' && (
-                    <>
-                      <WeatherCloudy fontSize="large" color="warning" />
-                      <Typography variant="body1" className="u-text-yellow-dark">
-                        Parcialmente nublado
-                      </Typography>
-                    </>
+                    <Cloud fontSize="large" color="warning" />
                   )}
                   {weatherData.condition === 'nublado' && (
-                    <>
-                      <WeatherCloudy fontSize="large" color="grey" />
-                      <Typography variant="body1" className="u-text-grey">
-                        Nublado
-                      </Typography>
-                    </>
+                    <Cloud fontSize="large" color="disabled" />
                   )}
                   {weatherData.condition === 'lluvioso' && (
-                    <>
-                      <WeatherRainy fontSize="large" color="info" />
-                      <Typography variant="body1" className="u-text-info-dark">
-                        Lluvioso
-                      </Typography>
-                    </>
+                    <CloudDone fontSize="large" color="info" />
                   )}
                   {weatherData.condition === 'tormentoso' && (
-                    <>
-                      <WeatherRainy fontSize="large" color="error" />
-                      <Typography variant="body1" className="u-text-error-dark">
-                        Tormentoso
-                      </Typography>
-                    </>
+                    <CloudDone fontSize="large" color="error" />
                   )}
                 </Box>
+                <Typography variant="body1" 
+                  color={weatherData.condition === 'soleado' ? 'yellow.dark' : 
+                         weatherData.condition === 'parcialmente nublado' ? 'yellow.dark' : 
+                         weatherData.condition === 'nublado' ? 'grey' : 
+                         weatherData.condition === 'lluvioso' ? 'info' : 
+                         'error'}
+                >
+                  {weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}
+                </Typography>
               </Box>
-            </Grid>
+            </Box>
           </CardContent>
         </Card>
       </Box>
@@ -350,19 +337,19 @@ const Weather: React.FC = () => {
                       </TableCell>
                       <TableCell align="center" sx={{ textAlign: 'center' }}>
                         {day.condition === 'soleado' && (
-                          <WeatherSunny fontSize="small" color="warning" />
+                          <WbSunny fontSize="small" color="warning" />
                         )}
                         {day.condition === 'parcialmente nublado' && (
-                          <WeatherCloudy fontSize="small" color="warning" />
+                          <Cloud fontSize="small" color="warning" />
                         )}
                         {day.condition === 'nublado' && (
-                          <WeatherCloudy fontSize="small" color="grey" />
+                          <Cloud fontSize="small" color="disabled" />
                         )}
                         {day.condition === 'lluvioso' && (
-                          <WeatherRainy fontSize="small" color="info" />
+                          <CloudDone fontSize="small" color="info" />
                         )}
                         {day.condition === 'tormentoso' && (
-                          <WeatherRainy fontSize="small" color="error" />
+                          <CloudDone fontSize="small" color="error" />
                         )}
                       </TableCell>
                       <TableCell align="center">
@@ -391,7 +378,7 @@ const Weather: React.FC = () => {
             className="u-bg-green-primary-light u-text-green-primary-dark"
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <WarningAmber fontSize="large" color="warning" />
+              <Opacity fontSize="large" color="warning" />
             </Box>
           </CardHeader>
           <CardContent>
@@ -409,8 +396,8 @@ const Weather: React.FC = () => {
             </Alert>
             <Alert severity="warning">
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <WarningAmber fontSize="medium" color="warning" />
-                <Typography sx={{ ml: 2 }}>Alerta de helada posible: temperaturas mínimas esperadas < 3°C para las próximas 2 noches en zonas bajas</Typography>
+                <Opacity fontSize="medium" color="warning" />
+                 <Typography sx={{ ml: 2 }}>Alerta de helada posible: temperaturas mínimas esperadas {'<'} 3°C para las próximas 2 noches en zonas bajas</Typography>
               </Box>
             </Alert>
           </CardContent>

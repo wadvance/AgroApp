@@ -7,24 +7,30 @@ import {
   CardContent,
   CardHeader,
   Stack,
+  Button,
 } from '@mui/material';
+import { LocalFlorist, Analytics, Calculate, Chat } from '@mui/icons-material';
 
 const Dashboard: React.FC = () => {
   return (
-    <Box component="main" sx={{ padding: 3 }}>
+    <Box component="main" sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
         Panel de Control
       </Typography>
-      
-      <Grid container spacing={3}>
+
+      <Grid container sx={{ gap: 3 }}>
         {/* Métrica 1: Estado del Campo */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Estado del Campo"
               subheader="Actualizado hace 2 horas"
               className="u-bg-green-primary-light u-text-green-primary-dark"
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <LocalFlorist fontSize="large" color="primary" />
+              </Box>
+            </CardHeader>
             <CardContent>
               <Typography variant="h2" className="u-text-green-primary u-font-weight-bold">
                 85%
@@ -32,7 +38,7 @@ const Dashboard: React.FC = () => {
               <Typography variant="body2" color="text.secondary">
                 Salud general del cultivo
               </Typography>
-              <Box mt={2}>
+              <Box sx={{ mt: 2 }}>
                 <div className="u-bg-green-primary-lighter u-rounded-sm" style={{ height: 8 }}>
                   <div className="u-bg-green-primary u-rounded-sm" style={{ width: '85%', height: '100%' }}></div>
                 </div>
@@ -42,13 +48,17 @@ const Dashboard: React.FC = () => {
         </Grid>
         
         {/* Métrica 2: Próximo Riego */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Próximo Riego"
               subheader="En 18 horas"
               className="u-bg-blue-light u-text-blue-dark"
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Analytics fontSize="large" color="primary" />
+              </Box>
+            </CardHeader>
             <CardContent>
               <Typography variant="h2" className="u-text-accent-blue u-font-weight-bold">
                 18h
@@ -56,7 +66,7 @@ const Dashboard: React.FC = () => {
               <Typography variant="body2" color="text.secondary">
                 Tiempo hasta el próximo riego programado
               </Typography>
-              <Box mt={2}>
+              <Box sx={{ mt: 2 }}>
                 <div className="u-bg-accent-blue-lighter u-rounded-sm" style={{ height: 8 }}>
                   <div className="u-bg-accent-blue u-rounded-sm" style={{ width: '40%', height: '100%' }}></div>
                 </div>
@@ -66,13 +76,17 @@ const Dashboard: React.FC = () => {
         </Grid>
         
         {/* Métrica 3: Humedad del Suelo */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Humedad del Suelo"
               subheader="Óptima"
               className="u-bg-brown-primary-light u-text-brown-primary-dark"
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Calculate fontSize="large" color="primary" />
+              </Box>
+            </CardHeader>
             <CardContent>
               <Typography variant="h2" className="u-text-brown-primary u-font-weight-bold">
                 62%
@@ -80,7 +94,7 @@ const Dashboard: React.FC = () => {
               <Typography variant="body2" color="text.secondary">
                 Nivel actual de humedad
               </Typography>
-              <Box mt={2}>
+              <Box sx={{ mt: 2 }}>
                 <div className="u-bg-brown-primary-lighter u-rounded-sm" style={{ height: 8 }}>
                   <div className="u-bg-brown-primary u-rounded-sm" style={{ width: '62%', height: '100%' }}></div>
                 </div>
@@ -90,13 +104,17 @@ const Dashboard: React.FC = () => {
         </Grid>
         
         {/* Métrica 4: Pronóstico del Clima */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Pronóstico"
               subheader="Próximos 5 días"
               className="u-bg-yellow-light u-text-yellow-dark"
-            />
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Chat fontSize="large" color="primary" />
+              </Box>
+            </CardHeader>
             <CardContent>
               <Typography variant="h2" className="u-text-accent-yellow u-font-weight-bold">
                 22°
@@ -104,7 +122,7 @@ const Dashboard: React.FC = () => {
               <Typography variant="body2" color="text.secondary">
                 Temperatura promedio esperada
               </Typography>
-              <Box mt={2} display="flex" justifyContent="space-around">
+              <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-around' }}>
                 <div className="u-text-center">
                   <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'bold' }}>
                     ☀️
@@ -128,103 +146,109 @@ const Dashboard: React.FC = () => {
       </Grid>
       
       {/* Segunda fila de tarjetas */}
-      <Grid container spacing={3} mt={4}>
-        {/* Actividad Reciente */}
-        <Grid item xs={12} md={8}>
-          <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
-            <CardHeader
-              title="Actividad Reciente"
-              className="u-bg-green-primary-light u-text-green-primary-dark"
-            />
-            <CardContent>
-              <Stack spacing={2}>
-                <div className="u-flex u-justify-between u-border-b u-pb-2">
-                  <Typography variant="body1" className="u-font-weight-medium">
-                    Análisis de muestra de suelo
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Hoy, 10:30 AM
-                  </Typography>
-                </div>
-                <div className="u-flex u-justify-between u-border-b u-pb-2">
-                  <Typography variant="body1" className="u-font-weight-medium">
-                    Programa de fertilización actualizado
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Ayer, 3:45 PM
-                  </Typography>
-                </div>
-                <div className="u-flex u-justify-between u-border-b u-pb-2">
-                  <Typography variant="body1" className="u-font-weight-medium">
-                    Alerta de plaga detectada en lote 3
-                  </Typography>
-                  <Typography variant="caption" color="text.error">
-                    Hoy, 8:15 AM
-                  </Typography>
-                </div>
-                <div className="u-flex u-justify-between">
-                  <Typography variant="body1" className="u-font-weight-medium">
-                    Recomendación de rotación de cultivos
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Ayer, 6:20 PM
-                  </Typography>
-                </div>
-              </Stack>
-            </CardContent>
-          </Card>
+      <Box sx={{ mt: 4 }}>
+        <Grid container sx={{ gap: 3 }}>
+          {/* Actividad Reciente */}
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
+              <CardHeader
+                title="Actividad Reciente"
+                className="u-bg-green-primary-light u-text-green-primary-dark"
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Analytics fontSize="large" color="primary" />
+                </Box>
+              </CardHeader>
+              <CardContent>
+                <Stack spacing={2}>
+                  <div className="u-flex u-justify-between u-border-b u-pb-2">
+                    <Typography variant="body1" className="u-font-weight-medium">
+                      Análisis de muestra de suelo
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Hoy, 10:30 AM
+                    </Typography>
+                  </div>
+                  <div className="u-flex u-justify-between u-border-b u-pb-2">
+                    <Typography variant="body1" className="u-font-weight-medium">
+                      Programa de fertilización actualizado
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Ayer, 3:45 PM
+                    </Typography>
+                  </div>
+                  <div className="u-flex u-justify-between u-border-b u-pb-2">
+                    <Typography variant="body1" className="u-font-weight-medium">
+                      Alerta de plaga detectada en lote 3
+                    </Typography>
+                    <Typography variant="caption" color="text.error">
+                      Hoy, 8:15 AM
+                    </Typography>
+                  </div>
+                  <div className="u-flex u-justify-between">
+                    <Typography variant="body1" className="u-font-weight-medium">
+                      Recomendación de rotación de cultivos
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Ayer, 6:20 PM
+                    </Typography>
+                  </div>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          {/* Accesos Rápidos */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
+              <CardHeader
+                title="Accesos Rápidos"
+                className="u-bg-green-primary-light u-text-green-primary-dark"
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LocalFlorist fontSize="large" color="primary" />
+                </Box>
+              </CardHeader>
+              <CardContent>
+                <Stack spacing={2}>
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    size="large"
+                    fullWidth
+                    startIcon={<LocalFlorist fontSize="inherit" />}>
+                    Identificar Semillas
+                  </Button>
+                  <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    size="large"
+                    fullWidth
+                    startIcon={<Analytics fontSize="inherit" />}>
+                    Diagnóstico de Cultivo
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    color="primary" 
+                    size="large"
+                    fullWidth
+                    startIcon={<Calculate fontSize="inherit" />}>
+                    Calculadora de Cosecha
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    color="secondary" 
+                    size="large"
+                    fullWidth
+                    startIcon={<Chat fontSize="inherit" />}>
+                    Chat con Agrónomo IA
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        
-        {/* Accesos Rápidos */}
-        <Grid item xs={12} md={4}>
-          <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
-            <CardHeader
-              title="Accesos Rápidos"
-              className="u-bg-green-primary-light u-text-green-primary-dark"
-            />
-            <CardContent>
-              <Stack spacing={2}>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  size="large"
-                  fullWidth
-                  startIcon={<LocalFloristIcon fontSize="inherit" />}
-                >
-                  Identificar Semillas
-                </Button>
-                <Button 
-                  variant="contained" 
-                  color="secondary" 
-                  size="large"
-                  fullWidth
-                  startIcon={<AnalyticsIcon fontSize="inherit" />}
-                >
-                  Diagnóstico de Cultivo
-                </Button>
-                <Button 
-                  variant="outlined" 
-                  color="primary" 
-                  size="large"
-                  fullWidth
-                  startIcon={<CalculateIcon fontSize="inherit" />}
-                >
-                  Calculadora de Cosecha
-                </Button>
-                <Button 
-                  variant="outlined" 
-                  color="secondary" 
-                  size="large"
-                  fullWidth
-                  startIcon={<ChatIcon fontSize="inherit" />}
-                >
-                  Chat con Agrónomo IA
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 };

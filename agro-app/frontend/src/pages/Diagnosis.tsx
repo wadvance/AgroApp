@@ -7,17 +7,16 @@ import {
   CardHeader,
   Stack,
   Button,
-  TextField,
   Chip,
-  Alert,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Divider,
 } from '@mui/material';
-import { Analytics, PhotoCamera, Agriculture, ErrorOutline, CheckCircle, WarningAmber, SaveAlt } from '@mui/icons-material';
+import { Analytics, PhotoCamera, Agriculture, ErrorOutlined, CheckCircle } from '@mui/icons-material';
 import { firebaseService } from '../firebase';
 
 const Diagnosis: React.FC = () => {
@@ -30,21 +29,20 @@ const Diagnosis: React.FC = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     setLoading(true);
-    
+
     try {
       // Upload image to Firebase Storage
       const imagePath = `diagnosis_images/${Date.now()}_${file.name}`;
       const downloadUrl = await firebaseService.uploadFile(file, imagePath);
       setImageUrl(downloadUrl);
-      
-      // Simulate API call for AI diagnosis
+
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2500));
-      
-      // Mock diagnosis result - sometimes healthy, sometimes with disease
-      const isHealthy = Math.random() > 0.3; // 70% chance of healthy
-      
+
+      const isHealthy = Math.random() > 0.3;
+
       if (isHealthy) {
         setDiagnosisResult({
           status: 'healthy',
@@ -87,9 +85,9 @@ const Diagnosis: React.FC = () => {
             treatment: ['Controlar vectores (pulgones, mosca blanca)', 'Usar semillas certificadas', 'Eliminar malezas hospederas']
           }
         ];
-        
+
         const selectedDisease = diseases[Math.floor(Math.random() * diseases.length)];
-        
+
         setDiagnosisResult({
           status: 'diseased',
           plantType: 'Maíz',
@@ -118,17 +116,17 @@ const Diagnosis: React.FC = () => {
 
   const saveDiagnosis = async () => {
     if (!diagnosisResult) return;
-    
+
     setUploading(true);
     try {
       const diagnosisData = {
         ...diagnosisResult,
         createdAt: new Date().toISOString()
       };
-      
+
       const result = await firebaseService.createDiagnosis(diagnosisData);
       setSavedDiagnoses(prev => [result, ...prev]);
-      
+
       // Reset form
       setImageUrl(null);
       setDiagnosisResult(null);
@@ -149,7 +147,7 @@ const Diagnosis: React.FC = () => {
         console.error('Error loading diagnoses:', error);
       }
     };
-    
+
     loadSavedDiagnoses();
   }, []);
 
@@ -158,10 +156,10 @@ const Diagnosis: React.FC = () => {
       <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
         Diagnóstico de Cultivos con IA
       </Typography>
-      
+
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
         {/* Upload Section */}
-        <Box xs={12} sm={6} md={4}>
+        <Box sx={{ width: { xs: '100%', sm: '50%', md: '33.33%' } }}>
           <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
             <CardHeader
               title="Subir Imagen de Planta"
@@ -173,7 +171,7 @@ const Diagnosis: React.FC = () => {
               </Box>
             </CardHeader>
             <CardContent>
-              <Stack spacing={2} alignItems="center">
+              <Stack spacing={2} sx={{ alignItems: 'center' }}>
                 <input
                   type="file"
                   accept="image/*"
@@ -181,20 +179,14 @@ const Diagnosis: React.FC = () => {
                   id="plant-image-upload"
                   onChange={handleImageUpload}
                 />
-                <label
+                <Box
+                  component="label"
                   htmlFor="plant-image-upload"
-                  variant="contained"
-                  color="primary"
-                  size="medium"
                   className="u-cursor-pointer u-transition-normal"
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'var(--green-primary-light)',
-                    }
-                  }}
+                  sx={{ '&:hover': { backgroundColor: 'var(--green-primary-light)' } }}
                 >
                   Seleccionar Imagen
-                </label>
+                </Box>
                 <Button
                   variant="outlined"
                   color="primary"
@@ -209,19 +201,19 @@ const Diagnosis: React.FC = () => {
                   Formatos: JPG, PNG (máx. 5MB)
                 </Typography>
               </Stack>
-              
+
               {imageUrl && (
-                <Box mt={3} textAlign="center">
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
                   <img 
                     src={imageUrl} 
                     alt="Planta subida" 
-                    sx={{ maxWidth: '100%', maxHeight: 200, borderRadius: 'var(--radius-md)' }}
+                    style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 'var(--radius-md)' }}
                   />
                 </Box>
               )}
-              
+
               {loading && !imageUrl && (
-                <Box mt={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Typography color="text.primary">Analizando planta...</Typography>
                   &nbsp;
                   <Box sx={{ width: 20, height: 20, borderColor: 'var(--green-primary)', borderStyle: 'solid', borderWidth: '2px', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
@@ -230,9 +222,9 @@ const Diagnosis: React.FC = () => {
             </CardContent>
           </Card>
         </Box>
-        
+
         {/* Results Section */}
-        <Box xs={12} sm={6} md={8}>
+        <Box sx={{ width: { xs: '100%', sm: '50%', md: '66.67%' } }}>
           {diagnosisResult ? (
             <Card className="u-bg-card u-shadow-sm u-transition-normal" sx={{ height: '100%' }}>
               <CardHeader
@@ -248,13 +240,13 @@ const Diagnosis: React.FC = () => {
                   {diagnosisResult.status === 'healthy' ? (
                     <CheckCircle fontSize="large" color="success" />
                   ) : (
-                    <ErrorOutline fontSize="large" color="error" />
+                    <ErrorOutlined fontSize="large" color="error" />
                   )}
                 </Box>
               </CardHeader>
               <CardContent>
                 <Stack spacing={3}>
-                  <Box textAlign="center">
+                  <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="h3" className="u-font-weight-bold">
                       {diagnosisResult.plantType}
                     </Typography>
@@ -263,7 +255,7 @@ const Diagnosis: React.FC = () => {
                         <Typography variant="h2" className="u-text-success u-font-weight-bold">
                           {diagnosisResult.confidence}%
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" mt={1}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
                           Confianza de salud
                         </Typography>
                       </>
@@ -273,10 +265,10 @@ const Diagnosis: React.FC = () => {
                         <Typography variant="h2" className="u-text-error u-font-weight-bold">
                           {diagnosisResult.confidence}%
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" mt={1}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
                           Confianza de detección
                         </Typography>
-                        <Box mt={2}>
+                        <Box sx={{ mt: 2 }}>
                           <Chip 
                             label={diagnosisResult.severity} 
                             color={diagnosisResult.severity === 'Leve' ? 'success' : diagnosisResult.severity === 'Moderada' ? 'warning' : 'error'}
@@ -286,11 +278,11 @@ const Diagnosis: React.FC = () => {
                       </>
                     )}
                   </Box>
-                  
+
                   {diagnosisResult.status === 'diseased' && (
                     <>
                       <Divider sx={{ my: 3 }} />
-                      
+
                       <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                         Información de la Enfermedad
                       </Typography>
@@ -314,9 +306,9 @@ const Diagnosis: React.FC = () => {
                       </Stack>
                     </>
                   )}
-                  
+
                   <Divider sx={{ my: 3 }} />
-                  
+
                   <Typography variant="h5" className="u-font-weight-semibold u-text-brown-primary">
                     Recomendaciones de Manejo
                   </Typography>
@@ -332,8 +324,8 @@ const Diagnosis: React.FC = () => {
                       </Box>
                     ))}
                   </Stack>
-                  
-                  <Box mt={3} textAlign="center">
+
+                  <Box sx={{ mt: 3, textAlign: 'center' }}>
                     <Button 
                       variant="contained" 
                       color={diagnosisResult.status === 'healthy' ? 'success' : 'error'} 
@@ -373,18 +365,18 @@ const Diagnosis: React.FC = () => {
                 </Box>
               </CardHeader>
               <CardContent>
-                <Box textAlign="center" py={4}>
+                <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h5" color="text.secondary">
                     Ninguna imagen analizada aún
                   </Typography>
-                  <Box mt={3}>
+                  <Box sx={{ mt: 3 }}>
                     <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
                       Utiliza nuestra tecnología de visión por computadora para detectar enfermedades, 
                       plagas y deficiencias nutricionales en tus cultivos. Simplemente toma una foto 
                       de las áreas afectadas y nuestro sistema te proporcionará un diagnóstico preciso.
                     </Typography>
                   </Box>
-                  <Box mt={3} textAlign="left" sx={{ maxWidth: 300, marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Box sx={{ mt: 3, textAlign: 'left', maxWidth: 300, marginLeft: 'auto', marginRight: 'auto' }}>
                     <Typography variant="body2" color="text.primary">
                       • Detección temprana de enfermedades fúngicas, bacterianas y virales
                     </Typography>
@@ -404,10 +396,10 @@ const Diagnosis: React.FC = () => {
           )}
         </Box>
       </Box>
-      
+
       {/* Saved Diagnoses Section */}
       {savedDiagnoses.length > 0 && (
-        <Box mt={6}>
+        <Box sx={{ mt: 6 }}>
           <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary mb">
             Diagnósticos Guardados
           </Typography>
@@ -427,8 +419,8 @@ const Diagnosis: React.FC = () => {
                   <TableRow key={diag.id}>
                     <TableCell>{diag.plantType}</TableCell>
                     <TableCell>
-                      {diag.status === 'healthy' ? 'Saludable' : `Enfermo: ${diag.disease || 'N/A'`}
-                      </TableCell>
+                      {diag.status === 'healthy' ? 'Saludable' : `Enfermo: ${diag.disease || 'N/A'}`}
+                    </TableCell>
                     <TableCell>{diag.confidence}%</TableCell>
                     <TableCell>{new Date(diag.diagnosedAt || diag.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>
