@@ -127,17 +127,17 @@ const Dashboard: React.FC = () => {
         </Typography>
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
           {!notifGranted && (
-            <Button variant="outlined" color="primary" size="small" startIcon={<Notifications />} onClick={handleEnableNotifications} sx={{ fontSize: '0.7rem', borderColor: '#1976D2', color: '#1976D2' }}>
+            <Button variant="contained" color="primary" size="small" startIcon={<Notifications />} onClick={handleEnableNotifications} sx={{ fontSize: '0.7rem' }}>
               Activar Notif
             </Button>
           )}
           {notifGranted && (
             <Chip icon={<Notifications />} label="Notif activas" color="success" size="small" variant="outlined" />
           )}
-          <Button variant="outlined" color="primary" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length} sx={{ fontSize: '0.7rem', borderColor: '#1976D2', color: '#1976D2' }}>
+          <Button variant="contained" color="primary" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length} sx={{ fontSize: '0.7rem' }}>
             Export Cult
           </Button>
-          <Button variant="outlined" color="primary" size="small" startIcon={<Download />} onClick={handleExportSeeds} sx={{ fontSize: '0.7rem', borderColor: '#1976D2', color: '#1976D2' }}>
+          <Button variant="contained" color="primary" size="small" startIcon={<Download />} onClick={handleExportSeeds} sx={{ fontSize: '0.7rem' }}>
             Export Sem
           </Button>
         </Stack>
