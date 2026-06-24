@@ -45,7 +45,7 @@ const ChatPage: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       const botMessage = {
         id: Date.now() + 1,
-        text: 'Respuesta prueba - hola mundo',
+        text: generateAIResponse(textToSend),
         sender: 'bot',
         timestamp: new Date()
       };
@@ -61,6 +61,18 @@ const ChatPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateAIResponse = (message: string): string => {
+    const lowerMsg = message.toLowerCase();
+    if (lowerMsg.includes('hola')) return 'Hola! Como puedo ayudarle con su cultivo hoy?';
+    if (lowerMsg.includes('riego')) return 'Para el riego necesito saber que cultivo tiene y la etapa de crecimiento.';
+    if (lowerMsg.includes('fertilizante')) return 'La fertilizacion depende del tipo de cultivo y analisis de suelo.';
+    if (lowerMsg.includes('plaga')) return 'Para diagnosticar plagas necesito que describa los sintomas.';
+    if (lowerMsg.includes('semilla')) return 'La variedad de semilla depende del clima y tipo de suelo de su zona.';
+    if (lowerMsg.includes('cosecha')) return 'Para estimar la cosecha necesito saber el tipo de cultivo y area.';
+    if (lowerMsg.includes('clima')) return 'El clima es importante para planificar siembras y cosechas.';
+    return 'Gracias por su consulta. Proporcioneme mas detalles sobre su cultivo.';
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -195,7 +207,7 @@ const ChatPage: React.FC = () => {
                   const isUser = msg.sender === 'user';
                   return (
                     <div key={msg.id} style={{ display: 'flex', marginBottom: '16px', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
-                      <div style={{ maxWidth: '80%', padding: '12px', borderRadius: '12px', backgroundColor: isUser ? '#2E7D32' : '#CCCCCC', color: isUser ? '#FFFFFF' : '#000000', fontSize: '16px', fontFamily: 'Arial, sans-serif' }}>
+                      <div style={{ maxWidth: '80%', padding: '12px', borderRadius: '12px', backgroundColor: isUser ? '#2E7D32' : '#FFFFFF', color: isUser ? '#FFFFFF' : '#000000', fontSize: '24px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', border: isUser ? 'none' : '2px solid #000000' }}>
                         <div>{msg.text}</div>
                         <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', color: isUser ? 'rgba(255,255,255,0.7)' : '#666666' }}>
                           {msg.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
