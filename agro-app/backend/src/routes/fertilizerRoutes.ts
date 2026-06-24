@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import FertilizerController from '../controllers/fertilizerController';
+import { FertilizerController } from '../controllers/fertilizerController.js';
 
 const router = Router();
 

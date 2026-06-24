@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import FertilizerService from '../services/fertilizerService';
+import type { Request, Response } from 'express';
+import { FertilizerService } from '../services/fertilizerService.js';
 
 export class FertilizerController {
   // Get all fertilizers
@@ -7,7 +7,7 @@ export class FertilizerController {
     try {
       const fertilizers = await FertilizerService.getAllFertilizers();
       res.status(200).json(fertilizers);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving fertilizers', error: error.message });
     }
   }
@@ -15,13 +15,13 @@ export class FertilizerController {
   // Get fertilizer by ID
   static async getFertilizerById(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const fertilizer = await FertilizerService.getFertilizerById(id);
       if (!fertilizer) {
         return res.status(404).json({ message: 'Fertilizer not found' });
       }
       res.status(200).json(fertilizer);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving fertilizer', error: error.message });
     }
   }
@@ -31,7 +31,7 @@ export class FertilizerController {
     try {
       const fertilizer = await FertilizerService.createFertilizer(req.body);
       res.status(201).json(fertilizer);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error creating fertilizer', error: error.message });
     }
   }
@@ -39,13 +39,13 @@ export class FertilizerController {
   // Update fertilizer by ID
   static async updateFertilizer(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const fertilizer = await FertilizerService.updateFertilizer(id, req.body);
       if (!fertilizer) {
         return res.status(404).json({ message: 'Fertilizer not found' });
       }
       res.status(200).json(fertilizer);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error updating fertilizer', error: error.message });
     }
   }
@@ -53,13 +53,13 @@ export class FertilizerController {
   // Delete fertilizer by ID
   static async deleteFertilizer(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const fertilizer = await FertilizerService.deleteFertilizer(id);
       if (!fertilizer) {
         return res.status(404).json({ message: 'Fertilizer not found' });
       }
       res.status(200).json({ message: 'Fertilizer deleted successfully' });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error deleting fertilizer', error: error.message });
     }
   }
@@ -73,7 +73,7 @@ export class FertilizerController {
       }
       const fertilizers = await FertilizerService.searchFertilizers(query as string);
       res.status(200).json(fertilizers);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error searching fertilizers', error: error.message });
     }
   }
@@ -81,10 +81,10 @@ export class FertilizerController {
   // Get fertilizers for crop
   static async getFertilizersForCrop(req: Request, res: Response) {
     try {
-      const { crop } = req.params;
+      const crop = req.params.crop as string;
       const fertilizers = await FertilizerService.getFertilizersForCrop(crop);
       res.status(200).json(fertilizers);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving fertilizers for crop', error: error.message });
     }
   }

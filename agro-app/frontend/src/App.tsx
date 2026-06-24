@@ -9,6 +9,8 @@ import Weather from './pages/Weather';
 import Calculator from './pages/Calculator';
 import ChatPage from './pages/Chat';
 import Map from './pages/Map';
+import CalendarPage from './pages/Calendar';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/map" element={<Map />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/profile" element={<Profile />} />
           {/* Redirect unknown paths to home */}
           <Route path="*" element={<Dashboard />} />
         </Route>

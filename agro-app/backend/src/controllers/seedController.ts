@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import SeedService from '../services/seedService';
+import type { Request, Response } from 'express';
+import { SeedService } from '../services/seedService.js';
 
 export class SeedController {
   // Get all seeds
@@ -7,7 +7,7 @@ export class SeedController {
     try {
       const seeds = await SeedService.getAllSeeds();
       res.status(200).json(seeds);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving seeds', error: error.message });
     }
   }
@@ -15,13 +15,13 @@ export class SeedController {
   // Get seed by ID
   static async getSeedById(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const seed = await SeedService.getSeedById(id);
       if (!seed) {
         return res.status(404).json({ message: 'Seed not found' });
       }
       res.status(200).json(seed);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving seed', error: error.message });
     }
   }
@@ -31,7 +31,7 @@ export class SeedController {
     try {
       const seed = await SeedService.createSeed(req.body);
       res.status(201).json(seed);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error creating seed', error: error.message });
     }
   }
@@ -39,13 +39,13 @@ export class SeedController {
   // Update seed by ID
   static async updateSeed(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const seed = await SeedService.updateSeed(id, req.body);
       if (!seed) {
         return res.status(404).json({ message: 'Seed not found' });
       }
       res.status(200).json(seed);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error updating seed', error: error.message });
     }
   }
@@ -53,13 +53,13 @@ export class SeedController {
   // Delete seed by ID
   static async deleteSeed(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const seed = await SeedService.deleteSeed(id);
       if (!seed) {
         return res.status(404).json({ message: 'Seed not found' });
       }
       res.status(200).json({ message: 'Seed deleted successfully' });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error deleting seed', error: error.message });
     }
   }
@@ -73,7 +73,7 @@ export class SeedController {
       }
       const seeds = await SeedService.searchSeeds(query as string);
       res.status(200).json(seeds);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error searching seeds', error: error.message });
     }
   }

@@ -1,4 +1,4 @@
-import Seed from "../models/Seed";
+import Seed from "../models/Seed.js";
 
 export class SeedService {
   // Get all seeds

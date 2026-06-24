@@ -1,4 +1,4 @@
-import Weather from "../models/Weather";
+import Weather from "../models/Weather.js";
 
 export class WeatherService {
   // Get all weather records

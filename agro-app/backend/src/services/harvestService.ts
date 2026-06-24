@@ -1,4 +1,4 @@
-import Harvest from '../models/Harvest';
+import Harvest from '../models/Harvest.js';
 
 export class HarvestService {
   // Get all harvest records

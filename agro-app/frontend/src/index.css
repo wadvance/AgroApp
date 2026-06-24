@@ -382,3 +382,37 @@ a:hover {
     --brown-primary-lighter: #6D4C41;
   }
 }
+
+html.dark {
+  --text-primary: #E0E0E0;
+  --text-secondary: #BDBDBD;
+  --text-hint: #9E9E9E;
+  --text-disabled: #757575;
+  
+  --bg-primary: #121212;
+  --bg-secondary: #1E1E1E;
+  --bg-card: #2C2C2C;
+  --bg-sidebar: #1E1E1E;
+  --bg-header: #1E1E1E;
+  
+  --border-primary: #424242;
+  --border-secondary: #616161;
+  
+  --green-primary: #66BB6A;
+  --green-primary-dark: #4CAF50;
+  --green-primary-light: #388E3C;
+  --green-primary-lighter: #2E7D32;
+  --green-primary-lightest: #1B5E20;
+  
+  --brown-primary: #A1887F;
+  --brown-primary-dark: #8D6E63;
+  --brown-primary-light: #6D4C41;
+  --brown-primary-lighter: #5D4037;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  
+  color-scheme: dark;
+}

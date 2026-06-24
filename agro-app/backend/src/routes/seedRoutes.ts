@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import SeedController from '../controllers/seedController';
+import { SeedController } from '../controllers/seedController.js';
 
 const router = Router();
 

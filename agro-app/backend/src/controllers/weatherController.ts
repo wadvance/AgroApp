@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import WeatherService from '../services/weatherService';
+import type { Request, Response } from 'express';
+import { WeatherService } from '../services/weatherService.js';
 
 export class WeatherController {
   // Get all weather records
@@ -7,7 +7,7 @@ export class WeatherController {
     try {
       const weather = await WeatherService.getAllWeather();
       res.status(200).json(weather);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving weather data', error: error.message });
     }
   }
@@ -15,13 +15,13 @@ export class WeatherController {
   // Get weather by ID
   static async getWeatherById(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const weather = await WeatherService.getWeatherById(id);
       if (!weather) {
         return res.status(404).json({ message: 'Weather record not found' });
       }
       res.status(200).json(weather);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving weather record', error: error.message });
     }
   }
@@ -31,7 +31,7 @@ export class WeatherController {
     try {
       const weather = await WeatherService.createWeather(req.body);
       res.status(201).json(weather);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error creating weather record', error: error.message });
     }
   }
@@ -39,13 +39,13 @@ export class WeatherController {
   // Update weather by ID
   static async updateWeather(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const weather = await WeatherService.updateWeather(id, req.body);
       if (!weather) {
         return res.status(404).json({ message: 'Weather record not found' });
       }
       res.status(200).json(weather);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error updating weather record', error: error.message });
     }
   }
@@ -53,13 +53,13 @@ export class WeatherController {
   // Delete weather by ID
   static async deleteWeather(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const weather = await WeatherService.deleteWeather(id);
       if (!weather) {
         return res.status(404).json({ message: 'Weather record not found' });
       }
       res.status(200).json({ message: 'Weather record deleted successfully' });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error deleting weather record', error: error.message });
     }
   }
@@ -67,13 +67,13 @@ export class WeatherController {
   // Get weather by location
   static async getWeatherByLocation(req: Request, res: Response) {
     try {
-      const { location } = req.params;
+      const location = req.params.location as string;
       const weather = await WeatherService.getWeatherByLocation(location);
       if (!weather) {
         return res.status(404).json({ message: 'Weather data not found for location' });
       }
       res.status(200).json(weather);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving weather by location', error: error.message });
     }
   }
@@ -87,7 +87,7 @@ export class WeatherController {
       }
       const history = await WeatherService.getWeatherHistory(location as string, limit ? parseInt(limit as string) : 10);
       res.status(200).json(history);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving weather history', error: error.message });
     }
   }

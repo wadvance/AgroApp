@@ -1,4 +1,4 @@
-import Fertilizer from "../models/Fertilizer";
+import Fertilizer from "../models/Fertilizer.js";
 
 export class FertilizerService {
   // Get all fertilizers

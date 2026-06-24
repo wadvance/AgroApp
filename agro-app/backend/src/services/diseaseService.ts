@@ -1,4 +1,4 @@
-import Disease from "../models/Disease";
+import Disease from "../models/Disease.js";
 
 export class DiseaseService {
   // Get all diseases

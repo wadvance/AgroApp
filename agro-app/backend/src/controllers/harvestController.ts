@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import HarvestService from '../services/harvestService';
+import type { Request, Response } from 'express';
+import { HarvestService } from '../services/harvestService.js';
 
 export class HarvestController {
   // Get all harvest records
@@ -7,7 +7,7 @@ export class HarvestController {
     try {
       const harvests = await HarvestService.getAllHarvests();
       res.status(200).json(harvests);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving harvests', error: error.message });
     }
   }
@@ -15,13 +15,13 @@ export class HarvestController {
   // Get harvest by ID
   static async getHarvestById(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const harvest = await HarvestService.getHarvestById(id);
       if (!harvest) {
         return res.status(404).json({ message: 'Harvest not found' });
       }
       res.status(200).json(harvest);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving harvest', error: error.message });
     }
   }
@@ -31,7 +31,7 @@ export class HarvestController {
     try {
       const harvest = await HarvestService.createHarvest(req.body);
       res.status(201).json(harvest);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error creating harvest', error: error.message });
     }
   }
@@ -39,13 +39,13 @@ export class HarvestController {
   // Update harvest by ID
   static async updateHarvest(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const harvest = await HarvestService.updateHarvest(id, req.body);
       if (!harvest) {
         return res.status(404).json({ message: 'Harvest not found' });
       }
       res.status(200).json(harvest);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: 'Error updating harvest', error: error.message });
     }
   }
@@ -53,13 +53,13 @@ export class HarvestController {
   // Delete harvest by ID
   static async deleteHarvest(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const harvest = await HarvestService.deleteHarvest(id);
       if (!harvest) {
         return res.status(404).json({ message: 'Harvest not found' });
       }
       res.status(200).json({ message: 'Harvest deleted successfully' });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error deleting harvest', error: error.message });
     }
   }
@@ -67,10 +67,10 @@ export class HarvestController {
   // Get harvests by crop type
   static async getHarvestsByCrop(req: Request, res: Response) {
     try {
-      const { cropType } = req.params;
+      const cropType = req.params.cropType as string;
       const harvests = await HarvestService.getHarvestsByCrop(cropType);
       res.status(200).json(harvests);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: 'Error retrieving harvests by crop type', error: error.message });
     }
   }
@@ -82,9 +82,9 @@ export class HarvestController {
       if (!cropType || !area) {
         return res.status(400).json({ message: 'Crop type and area are required' });
       }
-      const yield = await HarvestService.calculateExpectedYield(cropType, parseFloat(area));
-      res.status(200).json({ cropType, area, expectedYield: yield });
-    } catch (error) {
+      const cropYield = await HarvestService.calculateExpectedYield(cropType, parseFloat(area));
+      res.status(200).json({ cropType, area, expectedYield: cropYield });
+    } catch (error: any) {
       res.status(500).json({ message: 'Error calculating expected yield', error: error.message });
     }
   }
