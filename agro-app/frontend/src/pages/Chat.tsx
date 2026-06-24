@@ -9,18 +9,22 @@ import {
   TextField,
   Button,
   Avatar,
+  IconButton,
+  Drawer,
 } from '@mui/material';
-import { Chat as ChatIcon, LocalFlorist, Agriculture, Send, Calculate, Cloud } from '@mui/icons-material';
+import { LocalFlorist, Agriculture, Send, Calculate, Cloud, Menu as MenuIcon } from '@mui/icons-material';
+
+const SIDEBAR_WIDTH = 280;
 
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = React.useState<any[]>([]);
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
     
-    // Add user message
     const userMessage = {
       id: Date.now(),
       text: input,
@@ -33,19 +37,14 @@ const ChatPage: React.FC = () => {
     setLoading(true);
     
     try {
-      // Simulate API call to AI service
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock AI response based on keywords in user message
       const aiResponse = generateAIResponse(input);
-      
       const botMessage = {
         id: Date.now() + 1,
         text: aiResponse,
         sender: 'bot',
         timestamp: new Date()
       };
-      
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error getting AI response:', error);
@@ -63,7 +62,6 @@ const ChatPage: React.FC = () => {
   const generateAIResponse = (message: string): string => {
     const lowerMsg = message.toLowerCase();
     
-    // Simple keyword-based responses (in a real app, this would be a proper AI model)
     if (lowerMsg.includes('hola') || lowerMsg.includes('buenos días') || lowerMsg.includes('buenas tardes') || lowerMsg.includes('buenas noches')) {
       return '¡Hola! Soy su agrónomo virtual. ¿En qué puedo ayudarle hoy con su cultivo?';
     }
@@ -92,7 +90,6 @@ const ChatPage: React.FC = () => {
       return 'El monitoreo climático es esencial para la toma de decisiones agrícolas. ¿Le gustaría que le proporcione el pronóstico del tiempo específico para su zona o información sobre cómo ciertas condiciones climáticas afectan su cultivo actual?';
     }
     
-    // Default response
     return 'Gracias por su consulta. Para brindarle una recomendación más precisa y personalizada, ¿podría proporcionarme más detalles sobre su cultivo específico, incluyendo tipo de planta, etapa de crecimiento, ubicación geográfica y cualquier problema particular que esté experimentando?';
   };
 
@@ -102,176 +99,219 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  return (
-    <Box component="main" sx={{ p: 3, display: 'flex', height: 'calc(100vh - 64px)' }}>
-      {/* Sidebar with quick actions */}
-      <Box sx={{ width: 280, borderRight: '1px solid var(--border-primary)', p: 2 }}>
-        <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary mb">
-          AgroAsistente IA
+  const sidebarContent = (
+    <Box sx={{ width: SIDEBAR_WIDTH, p: 2 }}>
+      <Typography variant="h5" className="u-font-weight-semibold u-text-green-primary" sx={{ mb: 1 }}>
+        AgroAsistente IA
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Su agrónomo virtual disponible 24/7
+      </Typography>
+      
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" className="u-font-weight-semibold u-text-brown-primary" sx={{ mb: 1 }}>
+          Consultas rápidas
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Su agrónomo virtual disponible 24/7
+        <Stack spacing={1}>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            size="small"
+            startIcon={<LocalFlorist fontSize="inherit" />}
+            onClick={() => {
+              setInput('¿Qué variedad de semilla es mejor para mi zona?');
+              sendMessage();
+            }}
+          >
+            Semillas
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            size="small"
+            startIcon={<Agriculture fontSize="inherit" />}
+            onClick={() => {
+              setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?');
+              sendMessage();
+            }}
+          >
+            Diagnóstico
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            size="small"
+            startIcon={<Calculate fontSize="inherit" />}
+            onClick={() => {
+              setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?');
+              sendMessage();
+            }}
+          >
+            Cálculo
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            size="small"
+            startIcon={<Cloud fontSize="inherit" />}
+            onClick={() => {
+              setInput('¿Cuál es el pronóstico del tiempo para los próximos días?');
+              sendMessage();
+            }}
+          >
+            Clima
+          </Button>
+        </Stack>
+      </Box>
+      
+      <Box>
+        <Typography variant="h6" className="u-font-weight-semibold u-text-brown-primary" sx={{ mb: 1 }}>
+          Información
         </Typography>
-        
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" className="u-font-weight-semibold u-text-brown-primary mb">
-            Consultas rápidas
-          </Typography>
-          <Stack spacing={1}>
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              size="small"
-              startIcon={<LocalFlorist fontSize="inherit" />}
-              onClick={() => {
-                setInput('¿Qué variedad de semilla es mejor para mi zona?');
-                sendMessage();
-              }}
-            >
-              Semillas
-            </Button>
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              size="small"
-              startIcon={<Agriculture fontSize="inherit" />}
-              onClick={() => {
-                setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?');
-                sendMessage();
-              }}
-            >
-              Diagnóstico
-            </Button>
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              size="small"
-              startIcon={<Calculate fontSize="inherit" />}
-              onClick={() => {
-                setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?');
-                sendMessage();
-              }}
-            >
-              Cálculo
-            </Button>
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              size="small"
-              startIcon={<Cloud fontSize="inherit" />}
-              onClick={() => {
-                setInput('¿Cuál es el pronóstico del tiempo para los próximos días?');
-                sendMessage();
-              }}
-            >
-              Clima
-            </Button>
-          </Stack>
-        </Box>
-        
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" className="u-font-weight-semibold u-text-brown-primary mb">
-            Información
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar sx={{ bgcolor: 'var(--green-primary)', ml: -2 }}>
-              IA
-            </Avatar>
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>
-                AgroAsistente v1.0
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Modelo especializado en agricultura
-              </Typography>
-            </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar sx={{ bgcolor: 'var(--green-primary)' }}>
+            IA
+          </Avatar>
+          <Box sx={{ ml: 2 }}>
+            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>
+              AgroAsistente v1.0
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Modelo especializado en agricultura
+            </Typography>
           </Box>
         </Box>
       </Box>
+    </Box>
+  );
+
+  return (
+    <Box component="main" sx={{ p: { xs: 1, sm: 2, md: 3 }, display: 'flex', height: 'calc(100vh - 64px)', gap: 2 }}>
+      {/* Desktop sidebar */}
+      <Box sx={{ display: { xs: 'none', md: 'block' }, width: SIDEBAR_WIDTH, borderRight: '1px solid var(--border-primary)' }}>
+        {sidebarContent}
+      </Box>
+
+      {/* Mobile drawer */}
+      <Drawer
+        anchor="left"
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      >
+        {sidebarContent}
+      </Drawer>
       
       {/* Main chat area */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Card className="u-bg-card u-shadow-sm">
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <Card className="u-bg-card u-shadow-sm" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <CardHeader
-            title="Conversación con AgroAsistente IA"
-            subheader="Escriba su consulta agrícola abajo"
-            className="u-bg-green-primary-light u-text-green-primary-dark"
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <ChatIcon fontSize="large" color="primary" />
-            </Box>
-          </CardHeader>
-          <CardContent sx={{ flex: 1, p: 2, overflowY: 'auto' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column-reverse' }}>
-              {messages.map((msg: any) => (
-                <Box 
-                  key={msg.id} 
-                  sx={{ 
-                    display: 'flex', 
-                    marginBottom: 2, 
-                    alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start' 
-                  }}
+            title={
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <IconButton 
+                  sx={{ display: { xs: 'inline-flex', md: 'none' }, mr: 0.5 }} 
+                  onClick={() => setSidebarOpen(true)}
+                  size="small"
                 >
+                  <MenuIcon />
+                </IconButton>
+                AgroAsistente IA
+              </Box>
+            }
+            subheader="Escriba su consulta agrícola abajo"
+            className="u-bg-green-primary-light"
+            titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600, className: 'u-text-green-primary-dark' }}
+          />
+          <CardContent sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+            {messages.length === 0 ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center' }}>
+                  Escriba una consulta agrícola o seleccione una consulta rápida del menú lateral.
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column-reverse' }}>
+                {messages.map((msg: any) => (
                   <Box 
+                    key={msg.id} 
                     sx={{ 
-                      maxWidth: '70%', 
-                      padding: 1, 
-                      borderRadius: msg.sender === 'user' ? 'var(--radius-lg) var(--radius-lg) 0 var(--radius-lg)' : 'var(--radius-lg) var(--radius-lg) var(--radius-lg) 0',
-                      backgroundColor: msg.sender === 'user' ? 'var(--green-primary-light)' : 'var(--bg-card)',
-                      color: msg.sender === 'user' ? 'var(--green-primary-dark)' : 'var(--text-primary)'
+                      display: 'flex', 
+                      mb: 2, 
+                      justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                      alignItems: 'flex-start',
                     }}
                   >
-                    <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
-                      {msg.text}
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        {msg.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {msg.sender === 'bot' && (
-                    <Box sx={{ ml: 2, mt: -1 }}>
-                      <Avatar sx={{ bgcolor: 'var(--green-primary)', width: 28, height: 28 }}>
+                    {msg.sender === 'bot' && (
+                      <Avatar sx={{ bgcolor: 'var(--green-primary)', width: 28, height: 28, mr: 1, mt: 0.5, flexShrink: 0 }}>
                         IA
                       </Avatar>
+                    )}
+                    <Box 
+                      sx={{ 
+                        maxWidth: { xs: '85%', sm: '75%', md: '70%' }, 
+                        p: 1.5, 
+                        borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                        backgroundColor: msg.sender === 'user' ? 'var(--green-primary)' : 'var(--gray-100)',
+                        color: msg.sender === 'user' ? '#fff' : 'var(--text-primary)'
+                      }}
+                    >
+                      <Typography variant="body1" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                        {msg.text}
+                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                        <Typography variant="caption" sx={{ color: msg.sender === 'user' ? 'rgba(255,255,255,0.7)' : 'var(--text-secondary)' }}>
+                          {msg.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                        </Typography>
+                      </Box>
                     </Box>
-                  )}
-                </Box>
-              ))}
-              {loading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography color="text.primary">Pensando...</Typography>
-                    &nbsp;
-                    <Box sx={{ width: 20, height: 20, borderColor: 'var(--green-primary)', borderStyle: 'solid', borderWidth: '2px', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                   </Box>
-                </Box>
-              )}
-            </Box>
+                ))}
+                {loading && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography color="text.primary">Pensando...</Typography>
+                      &nbsp;
+                      <Box sx={{ width: 20, height: 20, borderColor: 'var(--green-primary)', borderStyle: 'solid', borderWidth: '2px', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            )}
           </CardContent>
-          <Box sx={{ p: 2, borderTop: '1px solid var(--border-primary)' }}>
+          <Box sx={{ p: { xs: 1.5, sm: 2 }, borderTop: '1px solid var(--border-primary)' }}>
             <Stack direction="row" spacing={1}>
               <TextField
-                label="Escribe tu consulta agrícola..."
+                size="small"
+                placeholder="Escribe tu consulta agrícola..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 slotProps={{ inputLabel: { shrink: true } }}
                 sx={{ flex: 1 }}
                 disabled={loading}
-                placeholder="Ej: ¿Cuándo debo aplicar fertilizante nitrogenado a mi maíz?"
+                multiline
+                maxRows={3}
               />
-              <Button 
-                variant="contained" 
-                color="primary" 
-                size="medium"
-                startIcon={<Send fontSize="inherit" />}
-                onClick={sendMessage}
-                disabled={loading || !input.trim()}
-              >
-                {loading ? 'Enviando...' : 'Enviar'}
-              </Button>
+<Button 
+  variant="contained" 
+  color="primary" 
+  size="medium"
+  onClick={sendMessage}
+  disabled={loading || !input.trim()}
+  sx={{ 
+    minWidth: { xs: 40, sm: 120 }, 
+    py: 0.75, 
+    px: { xs: 1, sm: 1.5 },
+    textTransform: 'none'
+  }}
+>
+  <Box component="span" sx={{ display: { xs: 'inline-block', sm: 'none' } }}>
+    {loading ? '...' : <Send fontSize="small" />}
+  </Box>
+  <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5 }}>
+    <Send fontSize="inherit" />
+    {loading ? 'Enviando...' : 'Enviar'}
+  </Box>
+</Button>
             </Stack>
           </Box>
         </Card>
