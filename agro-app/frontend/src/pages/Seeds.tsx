@@ -439,6 +439,8 @@ const Seeds: React.FC = () => {
         <Tabs 
           value={activeTab} 
           onChange={(_, v) => setActiveTab(v)}
+          variant="fullWidth"
+          scrollButtons="auto"
           sx={{
             minHeight: 36,
             '& .MuiTab-root': { 
