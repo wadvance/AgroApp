@@ -117,7 +117,8 @@ const Recommendations: React.FC = () => {
           <Card className="u-bg-card u-shadow-sm u-transition-normal">
             <CardHeader
               title="Parámetros del Cultivo"
-              className="u-bg-green-primary-light u-text-green-primary-dark"
+              className="u-bg-green-primary-light"
+              titleTypographyProps={{ sx: { color: '#000' } }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <LocalFlorist fontSize="large" color="primary" />
@@ -431,7 +432,9 @@ const Recommendations: React.FC = () => {
               <CardHeader
                 title="Lista para generar recomendaciones"
                 subheader="Seleccione los parámetros de su cultivo para obtener recomendaciones personalizadas"
-                className="u-bg-green-primary-light u-text-green-primary-dark"
+                className="u-bg-green-primary-light"
+                titleTypographyProps={{ sx: { color: '#000' } }}
+                subheaderTypographyProps={{ sx: { color: '#333' } }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Agriculture fontSize="large" color="primary" />
