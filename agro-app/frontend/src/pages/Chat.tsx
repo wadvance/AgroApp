@@ -35,7 +35,7 @@ const ChatPage: React.FC = () => {
     };
     
     setMessages(prev => [...prev, userMessage]);
-    if (!messageText) setInput('');
+    setInput('');
     setLoading(true);
     
     try {
