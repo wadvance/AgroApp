@@ -223,10 +223,16 @@ const ChatPage: React.FC = () => {
             titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600, className: 'u-text-green-primary-dark' }}
           />
           <CardContent sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Chip icon={<LocalFlorist />} label="Semillas" size="small" onClick={() => { setInput('¿Qué variedad de semilla es mejor para mi zona?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Agriculture />} label="Diagnóstico" size="small" onClick={() => { setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Calculate />} label="Cálculo" size="small" onClick={() => { setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Cloud />} label="Clima" size="small" onClick={() => { setInput('¿Cuál es el pronóstico del tiempo para los próximos días?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+            </Box>
             {messages.length === 0 ? (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                 <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center' }}>
-                  Escriba una consulta agrícola o seleccione una consulta rápida del menú lateral.
+                  Seleccione una consulta rápida o escriba su consulta abajo.
                 </Typography>
               </Box>
             ) : (
@@ -279,12 +285,6 @@ const ChatPage: React.FC = () => {
             )}
           </CardContent>
           <Box sx={{ p: { xs: 1.5, sm: 2 }, borderTop: '1px solid var(--border-primary)' }}>
-            <Stack direction="row" spacing={1} sx={{ mb: 1, display: { xs: 'flex', md: 'none' }, overflowX: 'auto', pb: 0.5 }}>
-              <Chip icon={<LocalFlorist />} label="Semillas" size="small" onClick={() => { setInput('¿Qué variedad de semilla es mejor para mi zona?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Agriculture />} label="Diagnóstico" size="small" onClick={() => { setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Calculate />} label="Cálculo" size="small" onClick={() => { setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Cloud />} label="Clima" size="small" onClick={() => { setInput('¿Cuál es el pronóstico del tiempo para los próximos días?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-            </Stack>
             <Stack direction="row" spacing={1}>
               <TextField
                 size="small"
