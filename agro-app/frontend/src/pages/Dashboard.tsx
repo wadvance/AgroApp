@@ -96,7 +96,11 @@ const Dashboard: React.FC = () => {
   const avgSoilMoisture = weatherData?.humidity ? Math.min(100, weatherData.humidity * 0.8 + 20) : 0;
 
   const handleExport = () => {
-    if (crops.length > 0) exportCropsToCSV(crops);
+    if (crops.length > 0) {
+      exportCropsToCSV(crops);
+    } else {
+      alert('No hay cultivos registrados para exportar.');
+    }
   };
 
   const handleExportSeeds = () => {
