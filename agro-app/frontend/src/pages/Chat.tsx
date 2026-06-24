@@ -22,6 +22,15 @@ const ChatPage: React.FC = () => {
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || input;
@@ -244,6 +253,7 @@ const ChatPage: React.FC = () => {
                     </Box>
                   </Box>
                 )}
+                <div ref={messagesEndRef} />
               </Box>
             )}
           </CardContent>
