@@ -26,6 +26,24 @@ export interface Seed {
     storage: string;
   };
   recommendations: string[];
+  seeding?: {
+    rate: string;
+    rateUnit: string;
+    plantsPerM2: string;
+    bagSize: string;
+    bagUnit: string;
+    seedsPerGram: number;
+    germinationRate: string;
+    depth: string;
+  };
+  nutrition?: {
+    protein: string;
+    fat: string;
+    fiber: string;
+    energy: string;
+    uses: string[];
+  };
+  images?: string[];
 }
 
 export const seedsDatabase: Seed[] = [
@@ -43,6 +61,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Moderado, 500-800 mm/ciclo', sun: 'Pleno sol', temperature: '20-30°C', fertilizer: 'N-P-K 12-24-12 en siembra, urea 46% a los 30 días' },
     harvest: { daysToMaturity: '110-120 días', method: 'Cosecha manual o mecánica cuando el grano tenga 15-20% humedad', storage: 'Silos con humedad menor a 13%' },
     recommendations: ['Rotar con leguminosas', 'Control de malezas en etapas tempranas', 'Monitoreo de plagas (gusano cogollero)'],
+    seeding: { rate: '20-25', rateUnit: 'kg/ha', plantsPerM2: '5-7', bagSize: '25', bagUnit: 'kg', seedsPerGram: 3, germinationRate: '90-95%', depth: '3-5 cm' },
+    nutrition: { protein: '9-11%', fat: '4-5%', fiber: '2-3%', energy: '365 kcal/100g', uses: ['Consumo humano', 'Alimento animal', 'Etanol', 'Aceite'] },
   },
   {
     id: '2',
@@ -58,6 +78,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '400-600 mm/ciclo', sun: 'Pleno sol', temperature: '15-22°C', fertilizer: 'N-P-K 10-30-10 en siembra, nitrógeno en macollamiento' },
     harvest: { daysToMaturity: '120-150 días', method: 'Cosecha cuando el tallo esté amarillo y grano duro', storage: 'Graneros secos y ventilados' },
     recommendations: ['Evitar exceso de nitrógeno', 'Control de royas con fungicidas preventivos', 'Rotación con maíz o soja'],
+    seeding: { rate: '120-150', rateUnit: 'kg/ha', plantsPerM2: '200-250', bagSize: '25', bagUnit: 'kg', seedsPerGram: 30, germinationRate: '85-90%', depth: '3-4 cm' },
+    nutrition: { protein: '12-14%', fat: '1.5-2%', fiber: '2.5%', energy: '327 kcal/100g', uses: ['Panificación', 'Pastas', 'Alimento animal', 'Harina'] },
   },
   {
     id: '3',
@@ -73,6 +95,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '450-700 mm/ciclo', sun: 'Pleno sol', temperature: '20-30°C', fertilizer: 'Fósforo y potasio en siembra, no necesita nitrógeno' },
     harvest: { daysToMaturity: '100-130 días', method: 'Cosecha cuando vainas estén marrones y grano duro', storage: 'Silos con 12% humedad' },
     recommendations: ['Inocular con Rhizobium', 'Control de orugas defoliadoras', 'No sembrar en suelos muy pesados'],
+    seeding: { rate: '50-70', rateUnit: 'kg/ha', plantsPerM2: '25-35', bagSize: '25', bagUnit: 'kg', seedsPerGram: 5, germinationRate: '85-95%', depth: '3-5 cm' },
+    nutrition: { protein: '36-40%', fat: '18-20%', fiber: '9-10%', energy: '446 kcal/100g', uses: ['Aceite', 'Alimento animal', 'Tofu', 'Leche vegetal'] },
   },
   {
     id: '4',
@@ -88,6 +112,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Inundación permanente 1000-1500 mm', sun: 'Pleno sol', temperature: '24-30°C', fertilizer: 'N-P-K 16-16-16, nitrógeno fraccionado' },
     harvest: { daysToMaturity: '120-150 días', method: 'Cosecha cuando 80% de granos estén dorados', storage: 'Humedad 13-14%' },
     recommendations: ['Nivelar bien el terreno', 'Control de malezas acuáticas', 'Manejo integrado de plagas'],
+    seeding: { rate: '80-120', rateUnit: 'kg/ha', plantsPerM2: '100-150', bagSize: '25', bagUnit: 'kg', seedsPerGram: 40, germinationRate: '85-90%', depth: '2-3 cm' },
+    nutrition: { protein: '7-8%', fat: '2-3%', fiber: '3-4%', energy: '345 kcal/100g', uses: ['Consumo humano', 'Alimento animal', 'Harina'] },
   },
   {
     id: '5',
@@ -103,6 +129,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '300-500 mm/ciclo', sun: 'Pleno sol', temperature: '18-25°C', fertilizer: 'Bajo en nitrógeno, alto en fósforo' },
     harvest: { daysToMaturity: '70-90 días', method: 'Arrancar plantas cuando vainas estén secas', storage: 'Lugar fresco y seco' },
     recommendations: ['Evitar encharcamiento', 'Control de babosas y caracoles', 'Rotación con maíz'],
+    seeding: { rate: '80-120', rateUnit: 'kg/ha', plantsPerM2: '15-25', bagSize: '25', bagUnit: 'kg', seedsPerGram: 2, germinationRate: '80-90%', depth: '3-4 cm' },
+    nutrition: { protein: '22-24%', fat: '1.5%', fiber: '6-8%', energy: '347 kcal/100g', uses: ['Consumo humano', 'Alimento animal'] },
   },
   {
     id: '6',
@@ -118,6 +146,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Frecuente, evitar encharcamiento', sun: 'Pleno sol', temperature: '20-27°C', fertilizer: 'Alto en potasio y fósforo' },
     harvest: { daysToMaturity: '70-90 días desde trasplante', method: 'Cosecha manual cuando fruto esté firme y rojo', storage: '12-15°C, 85% humedad' },
     recommendations: ['Rotación de cultivos', 'Control de mildiu y oídio', 'Poda de hojas inferiores'],
+    seeding: { rate: '0.3-0.5', rateUnit: 'g/planta', plantsPerM2: '2-3', bagSize: '0.5', bagUnit: 'kg', seedsPerGram: 300, germinationRate: '80-90%', depth: '0.5 cm' },
+    nutrition: { protein: '1-2%', fat: '0.2%', fiber: '1.5%', energy: '18 kcal/100g', uses: ['Consumo fresco', 'Salsas', 'Industria alimentaria'] },
   },
   {
     id: '7',
@@ -133,6 +163,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '1200-1800 mm/año', sun: 'Semi-sombra (40-60%)', temperature: '18-22°C', fertilizer: 'NPK 18-6-12 más micronutrientes' },
     harvest: { daysToMaturity: '3-4 años para primera cosecha', method: 'Manual selectivo (cerezas rojas)', storage: 'Café pergamino seco 12% humedad' },
     recommendations: ['Sembrar a la sombra de leguminosas', 'Control de roya con fungicidas', 'Renovación de plantas cada 15 años'],
+    seeding: { rate: '5000-7000', rateUnit: 'plantas/ha', plantsPerM2: '0.5-0.7', bagSize: '1', bagUnit: 'kg', seedsPerGram: 400, germinationRate: '80%', depth: '2-3 cm' },
+    nutrition: { protein: '13-15%', fat: '15-17%', fiber: '20-22%', energy: '85 kcal/100g', uses: ['Bebida', 'Industria alimentaria', 'Cosméticos'] },
   },
   {
     id: '8',
@@ -148,6 +180,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '1500-2500 mm/año', sun: 'Sombra (30-50%)', temperature: '24-28°C', fertilizer: 'NPK 12-12-18 más materia orgánica' },
     harvest: { daysToMaturity: '3-4 años', method: 'Corte de mazorcas maduras (amarillas/naranjas)', storage: 'Granos fermentados y secos 7% humedad' },
     recommendations: ['Sembrar árboles de sombra Inga', 'Control de moniliasis', 'Poda de formación y mantenimiento'],
+    seeding: { rate: '1000-1200', rateUnit: 'plantas/ha', plantsPerM2: '0.1-0.12', bagSize: '1', bagUnit: 'kg', seedsPerGram: 35, germinationRate: '75-85%', depth: '3-4 cm' },
+    nutrition: { protein: '12-14%', fat: '50-55%', fiber: '15-18%', energy: '540 kcal/100g', uses: ['Chocolate', 'Manteca', 'Cosméticos', 'Bebidas'] },
   },
   {
     id: '9',
@@ -163,6 +197,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '400-600 mm/ciclo', sun: 'Pleno sol', temperature: '15-20°C', fertilizer: 'NPK 15-15-15 más potasio' },
     harvest: { daysToMaturity: '90-120 días', method: 'Arranque cuando follaje se seque', storage: '4-8°C, oscuridad, 85% humedad' },
     recommendations: ['Rotación de 3 años', 'Control de tizón tardío', 'Semilla certificada'],
+    seeding: { rate: '1500-2000', rateUnit: 'kg/ha', plantsPerM2: '4-5', bagSize: '50', bagUnit: 'kg', seedsPerGram: 1, germinationRate: '90-95%', depth: '10-15 cm' },
+    nutrition: { protein: '2-3%', fat: '0.1%', fiber: '1-2%', energy: '77 kcal/100g', uses: ['Consumo humano', 'Almidón', 'Alimento animal'] },
   },
   {
     id: '10',
@@ -178,6 +214,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '600-1000 mm/ciclo', sun: 'Pleno sol', temperature: '25-30°C', fertilizer: 'Bajo en nitrógeno, alto en potasio' },
     harvest: { daysToMaturity: '8-12 meses', method: 'Arranque manual de raíces', storage: 'Suelo (hasta 6 meses) o refrigerada' },
     recommendations: ['Control de ácaros', 'No fertilizar en exceso', 'Asociar con maíz o frijol'],
+    seeding: { rate: '10000-15000', rateUnit: 'esquejes/ha', plantsPerM2: '1', bagSize: '100', bagUnit: 'unidades', seedsPerGram: 1, germinationRate: '85-90%', depth: '10-15 cm' },
+    nutrition: { protein: '1-2%', fat: '0.3%', fiber: '1.5%', energy: '160 kcal/100g', uses: ['Consumo humano', 'Almidón', 'Harina', 'Alimento animal'] },
   },
   {
     id: '11',
@@ -193,6 +231,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '600-900 mm/ciclo', sun: 'Pleno sol', temperature: '25-35°C', fertilizer: 'NPK 12-24-12' },
     harvest: { daysToMaturity: '140-160 días', method: 'Mecánica o manual cuando cápsulas abran', storage: 'Empacado en pacas' },
     recommendations: ['Control de picudo', 'Manejo integrado de plagas', 'Rotación con maíz'],
+    seeding: { rate: '20-30', rateUnit: 'kg/ha', plantsPerM2: '8-10', bagSize: '25', bagUnit: 'kg', seedsPerGram: 10, germinationRate: '80-85%', depth: '3-4 cm' },
+    nutrition: { protein: '23-25%', fat: '18-20%', fiber: '20-25%', energy: '535 kcal/100g', uses: ['Aceite', 'Alimento animal', 'Fibra textil'] },
   },
   {
     id: '12',
@@ -208,6 +248,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '400-600 mm/ciclo', sun: 'Pleno sol', temperature: '20-28°C', fertilizer: 'NPK 20-10-10' },
     harvest: { daysToMaturity: '100-120 días', method: 'Corte de cabezuelas cuando brácteas estén marrones', storage: 'Granos secos 9% humedad' },
     recommendations: ['No sembrar después de soja', 'Control de pájaros', 'Cosechar oportunamente'],
+    seeding: { rate: '5-8', rateUnit: 'kg/ha', plantsPerM2: '4-6', bagSize: '25', bagUnit: 'kg', seedsPerGram: 20, germinationRate: '85-90%', depth: '3-5 cm' },
+    nutrition: { protein: '20-22%', fat: '48-52%', fiber: '4-5%', energy: '584 kcal/100g', uses: ['Aceite', 'Consumo humano', 'Alimento animal'] },
   },
   {
     id: '13',
@@ -223,6 +265,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Moderado y constante', sun: 'Pleno sol', temperature: '13-24°C', fertilizer: 'NPK 10-20-20' },
     harvest: { daysToMaturity: '120-180 días', method: 'Arranque cuando follaje se doble y seque', storage: 'Mallas, lugar fresco y seco' },
     recommendations: ['Evitar malezas competitivas', 'Riego por goteo', 'Fertilización potásica'],
+    seeding: { rate: '3-5', rateUnit: 'kg/ha', plantsPerM2: '30-40', bagSize: '1', bagUnit: 'kg', seedsPerGram: 250, germinationRate: '75-85%', depth: '1 cm' },
+    nutrition: { protein: '1-2%', fat: '0.1%', fiber: '1.5-2%', energy: '40 kcal/100g', uses: ['Consumo humano', 'Condimento', 'Medicinal'] },
   },
   {
     id: '14',
@@ -238,6 +282,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Moderado constante', sun: 'Pleno sol', temperature: '15-22°C', fertilizer: 'NPK 10-20-20, alto en potasio' },
     harvest: { daysToMaturity: '70-120 días', method: 'Arranque manual cuando raíz tenga 2-3 cm diámetro', storage: 'Refrigeración 0-4°C' },
     recommendations: ['Suelos sin piedras', 'Riego uniforme', 'Adelgazar plantas a 5 cm'],
+    seeding: { rate: '2-4', rateUnit: 'kg/ha', plantsPerM2: '50-60', bagSize: '0.5', bagUnit: 'kg', seedsPerGram: 800, germinationRate: '70-80%', depth: '0.5-1 cm' },
+    nutrition: { protein: '1%', fat: '0.2%', fiber: '3-4%', energy: '41 kcal/100g', uses: ['Consumo humano', 'Jugos', 'Alimento animal'] },
   },
   {
     id: '15',
@@ -253,6 +299,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Constante, suelo húmedo', sun: 'Pleno sol a semi-sombra', temperature: '15-20°C', fertilizer: 'NPK 10-10-10' },
     harvest: { daysToMaturity: '45-70 días', method: 'Corte a ras del suelo', storage: 'Refrigeración 0-2°C' },
     recommendations: ['Siembra escalonada', 'Riego por goteo', 'Control de pulgones'],
+    seeding: { rate: '1-2', rateUnit: 'kg/ha', plantsPerM2: '10-12', bagSize: '0.1', bagUnit: 'kg', seedsPerGram: 900, germinationRate: '80-90%', depth: '0.5 cm' },
+    nutrition: { protein: '1.5%', fat: '0.2%', fiber: '1-2%', energy: '15 kcal/100g', uses: ['Consumo humano', 'Ensaladas', 'Gourmet'] },
   },
   {
     id: '16',
@@ -268,6 +316,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '300-500 mm/ciclo', sun: 'Pleno sol', temperature: '13-18°C', fertilizer: 'Bajo en nitrógeno' },
     harvest: { daysToMaturity: '60-90 días', method: 'Manual cuando vainas estén llenas', storage: 'Refrigeración o congelado' },
     recommendations: ['Tutorado para variedades trepadoras', 'Evitar exceso de humedad', 'Rotación con cereales'],
+    seeding: { rate: '80-120', rateUnit: 'kg/ha', plantsPerM2: '15-20', bagSize: '25', bagUnit: 'kg', seedsPerGram: 3, germinationRate: '80-90%', depth: '3-4 cm' },
+    nutrition: { protein: '24-26%', fat: '1.5%', fiber: '5-6%', energy: '342 kcal/100g', uses: ['Consumo humano', 'Alimento animal', 'Conserva'] },
   },
   {
     id: '17',
@@ -283,6 +333,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Moderado', sun: 'Pleno sol a semi-sombra', temperature: '15-25°C', fertilizer: 'NPK 10-10-10' },
     harvest: { daysToMaturity: '30-45 días (hojas), 90-120 (semillas)', method: 'Corte de hojas o semillas cuando maduren', storage: 'Refrigerado (hojas), seco (semillas)' },
     recommendations: ['Siembra directa', 'Riego frecuente', 'Cosechar antes de floración para hojas'],
+    seeding: { rate: '10-15', rateUnit: 'kg/ha', plantsPerM2: '30-40', bagSize: '1', bagUnit: 'kg', seedsPerGram: 100, germinationRate: '70-80%', depth: '1 cm' },
+    nutrition: { protein: '2-3%', fat: '0.5%', fiber: '3-4%', energy: '23 kcal/100g', uses: ['Condimento', 'Medicinal', 'Gastronomía'] },
   },
   {
     id: '18',
@@ -298,6 +350,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '1200-1500 mm/ciclo', sun: 'Pleno sol', temperature: '25-35°C', fertilizer: 'NPK 18-5-15, alto en nitrógeno' },
     harvest: { daysToMaturity: '12-18 meses', method: 'Corte manual o mecánico a ras del suelo', storage: 'Procesar en 24-48 horas' },
     recommendations: ['Renovar cada 5-7 cortes', 'Control de barrenador', 'Riego por surcos'],
+    seeding: { rate: '12000-15000', rateUnit: 'esquejes/ha', plantsPerM2: '1-2', bagSize: '200', bagUnit: 'unidades', seedsPerGram: 1, germinationRate: '80-85%', depth: '15-20 cm' },
+    nutrition: { protein: '0-1%', fat: '0%', fiber: '40-45%', energy: '380 kcal/100g', uses: ['Azúcar', 'Etanol', 'Melaza', 'Panela'] },
   },
   {
     id: '19',
@@ -313,6 +367,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '1200-1800 mm/año', sun: 'Pleno sol', temperature: '25-30°C', fertilizer: 'Alto en potasio (NPK 12-6-24)' },
     harvest: { daysToMaturity: '9-12 meses', method: 'Corte de racimo cuando frutos estén llenos', storage: '12-15°C para maduración controlada' },
     recommendations: ['Deshije regularmente', 'Control de sigatoka', 'Fertilización potásica abundante'],
+    seeding: { rate: '1000-1200', rateUnit: 'cormos/ha', plantsPerM2: '0.1-0.12', bagSize: '1', bagUnit: 'unidades', seedsPerGram: 1, germinationRate: '90-95%', depth: '30 cm' },
+    nutrition: { protein: '1-2%', fat: '0.3%', fiber: '2-3%', energy: '122 kcal/100g', uses: ['Consumo humano', 'Cocina', 'Harina', 'Snacks'] },
   },
   {
     id: '20',
@@ -328,6 +384,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '800-1200 mm/año', sun: 'Pleno sol', temperature: '24-30°C', fertilizer: 'NPK 15-15-15 más potasio en fructificación' },
     harvest: { daysToMaturity: '4-6 años', method: 'Manual cuando fruto cambie color', storage: '10-12°C, 85% humedad' },
     recommendations: ['Poda de formación', 'Control de antracnosis', 'Riego en floración y fructificación'],
+    seeding: { rate: '70-100', rateUnit: 'plantas/ha', plantsPerM2: '0.01', bagSize: '1', bagUnit: 'kg', seedsPerGram: 1, germinationRate: '80-90%', depth: '5 cm' },
+    nutrition: { protein: '1%', fat: '0.4%', fiber: '1.5-2%', energy: '60 kcal/100g', uses: ['Consumo fresco', 'Jugos', 'Deshidratado', 'Mermeladas'] },
   },
   {
     id: '21',
@@ -343,6 +401,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '800-1200 mm/año', sun: 'Pleno sol', temperature: '20-28°C', fertilizer: 'NPK 12-6-18 más zinc y boro' },
     harvest: { daysToMaturity: '4-6 años', method: 'Manual cuando fruto cambie de color', storage: '5-7°C para evitar maduración' },
     recommendations: ['Injertar para calidad', 'Control de barrenador', 'Riego por goteo'],
+    seeding: { rate: '150-200', rateUnit: 'plantas/ha', plantsPerM2: '0.01-0.02', bagSize: '1', bagUnit: 'kg', seedsPerGram: 1, germinationRate: '75-85%', depth: '5 cm' },
+    nutrition: { protein: '2%', fat: '15-20%', fiber: '4-5%', energy: '160 kcal/100g', uses: ['Consumo fresco', 'Guacamole', 'Aceite', 'Cosméticos'] },
   },
   {
     id: '22',
@@ -358,6 +418,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '900-1200 mm/año', sun: 'Pleno sol', temperature: '20-30°C', fertilizer: 'NPK 12-6-18 más micronutrientes' },
     harvest: { daysToMaturity: '3-5 años', method: 'Manual cuando fruto esté completamente naranja', storage: '8-10°C, 85% humedad' },
     recommendations: ['Control de dragón amarillo', 'Poda sanitaria', 'Riego en floración'],
+    seeding: { rate: '250-300', rateUnit: 'plantas/ha', plantsPerM2: '0.02-0.03', bagSize: '1', bagUnit: 'kg', seedsPerGram: 5, germinationRate: '80-85%', depth: '2-3 cm' },
+    nutrition: { protein: '1%', fat: '0.1%', fiber: '2-3%', energy: '47 kcal/100g', uses: ['Consumo fresco', 'Jugos', 'Mermeladas', 'Industria'] },
   },
   {
     id: '23',
@@ -373,6 +435,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: '500-800 mm/ciclo', sun: 'Pleno sol', temperature: '18-28°C', fertilizer: 'NPK 10-10-10 más potasio' },
     harvest: { daysToMaturity: '3-4 años', method: 'Manual en racimos cuando alcancen madurez', storage: '0-2°C, 90% humedad' },
     recommendations: ['Poda de formación y fructificación', 'Control de mildiu y oídio', 'Riego por goteo'],
+    seeding: { rate: '1300-1600', rateUnit: 'plantas/ha', plantsPerM2: '0.13-0.16', bagSize: '1', bagUnit: 'kg', seedsPerGram: 25, germinationRate: '75-85%', depth: '2-3 cm' },
+    nutrition: { protein: '1%', fat: '0.2%', fiber: '1-2%', energy: '69 kcal/100g', uses: ['Vino', 'Consumo fresco', 'Pasas', 'Jugos'] },
   },
   {
     id: '24',
@@ -388,6 +452,8 @@ export const seedsDatabase: Seed[] = [
     care: { water: 'Moderado, reducir al final', sun: 'Pleno sol', temperature: '12-24°C', fertilizer: 'NPK 10-20-20' },
     harvest: { daysToMaturity: '150-180 días', method: 'Arranque cuando follaje se seque 50%', storage: 'Mallas, lugar fresco y seco' },
     recommendations: ['Suelos bien drenados', 'Rotación de cultivos', 'Fertilización potásica'],
+    seeding: { rate: '500-800', rateUnit: 'kg/ha', plantsPerM2: '15-20', bagSize: '10', bagUnit: 'kg', seedsPerGram: 1, germinationRate: '85-90%', depth: '5 cm' },
+    nutrition: { protein: '6-7%', fat: '0.2%', fiber: '1.5%', energy: '149 kcal/100g', uses: ['Condimento', 'Medicinal', 'Gastronomía'] },
   },
 ];
 
@@ -413,3 +479,5 @@ export const searchSeeds = (query: string): Seed[] => {
     s.type.toLowerCase().includes(q)
   );
 };
+
+export const getDefaultSeed = (): Seed => seedsDatabase[0];

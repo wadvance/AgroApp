@@ -31,6 +31,8 @@ import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  Agriculture as AgricultureIcon,
+  WaterDrop as WaterDropIcon,
 } from '@mui/icons-material';
 import { Outlet, NavLink, useResolvedPath, useMatch, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
@@ -134,6 +136,8 @@ const MainLayout: React.FC = () => {
     { to: '/recommendations', icon: <LocalPharmacyIcon fontSize="small" />, label: 'Recomendaciones' },
     { to: '/weather', icon: <CloudIcon fontSize="small" />, label: 'Clima' },
     { to: '/map', icon: <MapIcon fontSize="small" />, label: 'Mapas' },
+    { to: '/crops', icon: <AgricultureIcon fontSize="small" />, label: 'Cultivos' },
+    { to: '/irrigation', icon: <WaterDropIcon fontSize="small" />, label: 'Riego' },
     { to: '/calculator', icon: <CalculateIcon fontSize="small" />, label: 'Calculadora' },
     { to: '/calendar', icon: <CalendarMonthIcon fontSize="small" />, label: 'Calendario' },
     { to: '/profile', icon: <PersonIcon fontSize="small" />, label: 'Perfil' },

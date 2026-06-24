@@ -12,6 +12,8 @@ import Weather from './pages/Weather';
 import Calculator from './pages/Calculator';
 import ChatPage from './pages/Chat';
 import Map from './pages/Map';
+import CropManagement from './pages/CropManagement';
+import Irrigation from './pages/Irrigation';
 import CalendarPage from './pages/Calendar';
 import Profile from './pages/Profile';
 
@@ -51,6 +53,8 @@ function App() {
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/map" element={<Map />} />
+            <Route path="/crops" element={<CropManagement />} />
+            <Route path="/irrigation" element={<Irrigation />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/profile" element={<Profile />} />
             {/* Redirect unknown paths to home */}

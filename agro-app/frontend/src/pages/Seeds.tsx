@@ -1,4 +1,5 @@
 import React from 'react';
+import BackButton from '../components/BackButton';
 import {
   Box,
   Typography,
@@ -20,6 +21,10 @@ import {
   AccordionDetails,
   InputAdornment,
   Divider,
+  Tabs,
+  Tab,
+  Alert,
+  MenuItem,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import {
@@ -29,6 +34,10 @@ import {
   SaveAlt,
   Search,
   ExpandMore,
+  Add,
+  Calculate,
+  Agriculture,
+  Straighten,
 } from '@mui/icons-material';
 import { firebaseService } from '../firebase';
 import { seedsDatabase, searchSeeds, identifySeedByImage } from '../data/seeds';
@@ -83,6 +92,7 @@ const getDominantColorFromImage = (imageUrl: string): Promise<{ color: string; s
 };
 
 const Seeds: React.FC = () => {
+  const [activeTab, setActiveTab] = React.useState(0);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [searchResults, setSearchResults] = React.useState<Seed[]>([]);
   const [selectedSeed, setSelectedSeed] = React.useState<Seed | null>(null);
@@ -92,6 +102,12 @@ const Seeds: React.FC = () => {
   const [uploading, setUploading] = React.useState(false);
   const [savedSeeds, setSavedSeeds] = React.useState<any[]>([]);
   const [matchedSeeds, setMatchedSeeds] = React.useState<Seed[]>([]);
+  const [showAddForm, setShowAddForm] = React.useState(false);
+  const [newSeed, setNewSeed] = React.useState({
+    name: '', scientificName: '', type: '', color: '', shape: '', size: '',
+    characteristics: '', imageDescription: '',
+    plantingSeason: '', plantingDepth: '', plantingSpacing: '', plantingSoil: '',
+  });
 
   React.useEffect(() => {
     const loadSavedSeeds = async () => {
@@ -192,6 +208,34 @@ const Seeds: React.FC = () => {
     setSearchResults([]);
     setSearchQuery('');
     setMatchedSeeds([]);
+  };
+
+  const handleAddNewSeed = () => {
+    if (!newSeed.name || !newSeed.scientificName) return;
+    const seedData = {
+      seedType: newSeed.name,
+      variety: newSeed.scientificName,
+      type: newSeed.type,
+      color: newSeed.color,
+      shape: newSeed.shape,
+      size: newSeed.size,
+      characteristics: newSeed.characteristics.split(',').map(c => c.trim()),
+      imageDescription: newSeed.imageDescription,
+      planting: {
+        season: newSeed.plantingSeason,
+        depth: newSeed.plantingDepth,
+        spacing: newSeed.plantingSpacing,
+        soil: newSeed.plantingSoil,
+      },
+      imageUrl,
+      confidence: 85,
+      analyzedAt: new Date().toISOString(),
+    };
+    firebaseService.createSeed(seedData).then(result => {
+      setSavedSeeds(prev => [result, ...prev]);
+      setShowAddForm(false);
+      setNewSeed({ name: '', scientificName: '', type: '', color: '', shape: '', size: '', characteristics: '', imageDescription: '', plantingSeason: '', plantingDepth: '', plantingSpacing: '', plantingSoil: '' });
+    });
   };
 
   const displaySeeds = searchResults.length > 0 ? searchResults : (matchedSeeds.length > 0 ? matchedSeeds : []);
@@ -350,12 +394,55 @@ const Seeds: React.FC = () => {
     </Card>
   );
 
+  const [calcSeed, setCalcSeed] = React.useState<Seed | null>(null);
+  const [calcArea, setCalcArea] = React.useState(1);
+  const [calcRate, setCalcRate] = React.useState(20);
+  const [calcBagSize, setCalcBagSize] = React.useState(25);
+  const [calcUnit, setCalcUnit] = React.useState('kg');
+  const [calcResults, setCalcResults] = React.useState<any>(null);
+
+  const handleCalcSeedSelect = (seed: Seed) => {
+    setCalcSeed(seed);
+    if (seed.seeding) {
+      const rate = parseFloat(seed.seeding.rate.split('-')[0]) || 20;
+      const bagSize = parseFloat(seed.seeding.bagSize) || 25;
+      setCalcRate(rate);
+      setCalcBagSize(bagSize);
+    }
+    setCalcResults(null);
+  };
+
+  const handleCalculate = () => {
+    if (!calcSeed) return;
+    const totalSeed = calcRate * calcArea;
+    const bagsNeeded = Math.ceil(totalSeed / calcBagSize);
+    const areaPerBag = calcBagSize / calcRate;
+    const seedsPerBag = calcSeed.seeding?.seedsPerGram ? calcBagSize * 1000 * calcSeed.seeding.seedsPerGram : 0;
+
+    setCalcResults({
+      totalSeed: totalSeed.toFixed(1),
+      bagsNeeded,
+      areaPerBag: areaPerBag.toFixed(2),
+      seedsPerBag: seedsPerBag > 0 ? Math.round(seedsPerBag).toLocaleString() : 'N/A',
+      ratePerHa: calcRate,
+      bagSize: calcBagSize,
+      area: calcArea,
+      unit: calcUnit,
+    });
+  };
+
   return (
     <Box component="main" sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
-        Identificador de Semillas
-      </Typography>
+      <BackButton />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
+          <Tab label="Identificador de Semillas" icon={<PhotoCamera />} iconPosition="start" />
+          <Tab label="Calculadora de Siembra" icon={<Calculate />} iconPosition="start" />
+        </Tabs>
+      </Box>
 
+      {activeTab === 0 && (
+        <Box>
       <Box sx={{ mb: 3 }}>
         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, sm: 6, md: 5 }}>
@@ -377,23 +464,26 @@ const Seeds: React.FC = () => {
             />
           </Grid>
           <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              style={{ display: 'none' }}
-              id="seed-camera-capture"
-              onChange={handleImageUpload}
-            />
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<PhotoCamera />}
-              onClick={() => document.getElementById('seed-camera-capture')?.click()}
-              disabled={loading}
-            >
-              Tomar Foto
-            </Button>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style={{ display: 'none' }}
+            id="seed-camera-capture"
+            onChange={handleImageUpload}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            startIcon={<PhotoCamera />}
+            onClick={() => document.getElementById('seed-camera-capture')?.click()}
+            disabled={loading}
+            size="large"
+            sx={{ py: 1.5 }}
+          >
+            📷 Tomar Foto
+          </Button>
           </Grid>
           <Grid size={{ xs: 6, sm: 3, md: 2 }}>
             <input
@@ -463,6 +553,51 @@ const Seeds: React.FC = () => {
                 ))}
               </CardContent>
             </Card>
+          ) : searchQuery && !selectedSeed ? (
+            <Box>
+              <Card sx={{ mt: 2 }}>
+                <CardContent sx={{ textAlign: 'center', py: 3 }}>
+                  <Typography variant="body1" color="text.secondary" gutterBottom>
+                    No se encontró "{searchQuery}" en la base de datos
+                  </Typography>
+                  <Button variant="outlined" color="primary" startIcon={<Add />} onClick={() => setShowAddForm(!showAddForm)} sx={{ mt: 1 }}>
+                    {showAddForm ? 'Cancelar' : 'Agregar a la base de datos'}
+                  </Button>
+                </CardContent>
+              </Card>
+              {showAddForm && (
+                <Card sx={{ mt: 2 }}>
+                  <CardHeader title="Agregar Nueva Semilla" className="u-bg-green-primary-light" titleTypographyProps={{ variant: 'subtitle1' }} />
+                  <CardContent>
+                    <Stack spacing={2}>
+                      <TextField label="Nombre común" size="small" value={newSeed.name} onChange={(e) => setNewSeed(s => ({ ...s, name: e.target.value }))} />
+                      <TextField label="Nombre científico" size="small" value={newSeed.scientificName} onChange={(e) => setNewSeed(s => ({ ...s, scientificName: e.target.value }))} />
+                      <Stack direction="row" spacing={1}>
+                        <TextField label="Tipo" size="small" sx={{ flex: 1 }} value={newSeed.type} onChange={(e) => setNewSeed(s => ({ ...s, type: e.target.value }))} />
+                        <TextField label="Color" size="small" sx={{ flex: 1 }} value={newSeed.color} onChange={(e) => setNewSeed(s => ({ ...s, color: e.target.value }))} />
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <TextField label="Forma" size="small" sx={{ flex: 1 }} value={newSeed.shape} onChange={(e) => setNewSeed(s => ({ ...s, shape: e.target.value }))} />
+                        <TextField label="Tamaño" size="small" sx={{ flex: 1 }} value={newSeed.size} onChange={(e) => setNewSeed(s => ({ ...s, size: e.target.value }))} />
+                      </Stack>
+                      <TextField label="Características (separadas por coma)" size="small" value={newSeed.characteristics} onChange={(e) => setNewSeed(s => ({ ...s, characteristics: e.target.value }))} />
+                      <TextField label="Descripción de la imagen" size="small" multiline rows={2} value={newSeed.imageDescription} onChange={(e) => setNewSeed(s => ({ ...s, imageDescription: e.target.value }))} />
+                      <Accordion><AccordionSummary expandIcon={<ExpandMore />}>Información de Siembra</AccordionSummary><AccordionDetails>
+                        <Stack spacing={1}>
+                          <TextField label="Temporada" size="small" value={newSeed.plantingSeason} onChange={(e) => setNewSeed(s => ({ ...s, plantingSeason: e.target.value }))} />
+                          <TextField label="Profundidad" size="small" value={newSeed.plantingDepth} onChange={(e) => setNewSeed(s => ({ ...s, plantingDepth: e.target.value }))} />
+                          <TextField label="Espaciado" size="small" value={newSeed.plantingSpacing} onChange={(e) => setNewSeed(s => ({ ...s, plantingSpacing: e.target.value }))} />
+                          <TextField label="Suelo" size="small" value={newSeed.plantingSoil} onChange={(e) => setNewSeed(s => ({ ...s, plantingSoil: e.target.value }))} />
+                        </Stack>
+                      </AccordionDetails></Accordion>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Button variant="contained" color="primary" onClick={handleAddNewSeed}>Guardar Nueva Semilla</Button>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+            </Box>
           ) : (
             <Card sx={{ height: '100%' }}>
               <CardHeader
@@ -500,7 +635,7 @@ const Seeds: React.FC = () => {
         </Grid>
       </Grid>
 
-      {savedSeeds.length > 0 && (
+      {savedSeeds.length > 0 && activeTab === 0 && (
         <Box sx={{ mt: 6 }}>
           <Typography variant="h5" gutterBottom className="u-font-weight-semibold u-text-green-primary">
             Semillas Analizadas Guardadas
@@ -531,6 +666,266 @@ const Seeds: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        </Box>
+      )}
+
+        </Box>
+      )}
+
+      {/* Seeding Calculator Tab */}
+      {activeTab === 1 && (
+        <Box>
+          <Typography variant="h5" gutterBottom className="u-font-weight-semibold u-text-green-primary">
+            Calculadora de Siembra
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Calcula la cantidad de semillas necesarias para tu parcela, rendimiento por bolsa y necesidades totales.
+          </Typography>
+
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Card>
+                <CardHeader
+                  title="Seleccionar Variedad"
+                  className="u-bg-green-primary-light"
+                  titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600 }}
+                />
+                <CardContent>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder="Buscar variedad de semilla..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    sx={{ mb: 2 }}
+                    slotProps={{
+                      input: {
+                        startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment>,
+                      },
+                    }}
+                  />
+                  <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
+                    {(searchQuery.trim() ? searchSeeds(searchQuery) : seedsDatabase).slice(0, 20).map((seed) => (
+                      <Card
+                        key={seed.id}
+                        variant="outlined"
+                        sx={{
+                          mb: 0.5, cursor: 'pointer',
+                          border: calcSeed?.id === seed.id ? 2 : 1,
+                          borderColor: calcSeed?.id === seed.id ? 'primary.main' : 'divider',
+                          '&:hover': { bgcolor: 'action.hover' },
+                        }}
+                        onClick={() => handleCalcSeedSelect(seed)}
+                      >
+                        <CardContent sx={{ py: 1, px: 1.5 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>{seed.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">{seed.scientificName}</Typography>
+                          <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
+                            <Chip label={seed.type} size="small" variant="outlined" sx={{ height: 18, '& .MuiChip-label': { fontSize: 10 } }} />
+                            <Chip label={seed.size} size="small" variant="outlined" sx={{ height: 18, '& .MuiChip-label': { fontSize: 10 } }} />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Card>
+                <CardHeader
+                  title="Parámetros de Siembra"
+                  className="u-bg-green-primary-light"
+                  titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600 }}
+                />
+                <CardContent>
+                  {calcSeed && (
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Agriculture color="primary" />
+                      <Box>
+                        <Typography variant="subtitle2">{calcSeed.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">{calcSeed.scientificName}</Typography>
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <TextField
+                        fullWidth
+                        label="Tasa de siembra"
+                        type="number"
+                        value={calcRate}
+                        onChange={(e) => { setCalcRate(parseFloat(e.target.value) || 0); setCalcResults(null); }}
+                        helperText={calcSeed?.seeding ? `Recomendado: ${calcSeed.seeding.rate} ${calcSeed.seeding.rateUnit}` : 'kg/ha'}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <TextField
+                        fullWidth
+                        label="Unidad de tasa"
+                        select
+                        value={calcUnit}
+                        onChange={(e) => setCalcUnit(e.target.value)}
+                      >
+                        <MenuItem value="kg">kg/ha</MenuItem>
+                        <MenuItem value="lb">lb/ac</MenuItem>
+                        <MenuItem value="oz">oz/ac</MenuItem>
+                        <MenuItem value="seed">semillas/ha</MenuItem>
+                      </TextField>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <TextField
+                        fullWidth
+                        label="Tamaño de bolsa"
+                        type="number"
+                        value={calcBagSize}
+                        onChange={(e) => { setCalcBagSize(parseFloat(e.target.value) || 0); setCalcResults(null); }}
+                        helperText={calcSeed?.seeding ? `Bolsa estándar: ${calcSeed.seeding.bagSize} ${calcSeed.seeding.bagUnit}` : 'kg/bolsa'}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <TextField
+                        fullWidth
+                        label="Área a sembrar"
+                        type="number"
+                        value={calcArea}
+                        onChange={(e) => { setCalcArea(parseFloat(e.target.value) || 0); setCalcResults(null); }}
+                        helperText="Hectáreas"
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Box sx={{ textAlign: 'center', mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Calculate />}
+                      onClick={handleCalculate}
+                      disabled={!calcSeed || !calcRate || !calcBagSize || !calcArea}
+                      size="large"
+                    >
+                      Calcular Necesidades
+                    </Button>
+                  </Box>
+
+                  {calcResults && (
+                    <Box sx={{ mt: 3 }}>
+                      <Divider sx={{ mb: 2 }} />
+                      <Typography variant="h6" gutterBottom className="u-text-green-primary">
+                        Resultados
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Card variant="outlined" sx={{ textAlign: 'center' }}>
+                            <CardContent sx={{ py: 1.5 }}>
+                              <Straighten color="primary" sx={{ fontSize: 28, mb: 0.5 }} />
+                              <Typography variant="h5" color="primary.main" sx={{ fontWeight: 700 }}>
+                                {calcResults.bagsNeeded}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">bolsas necesarias</Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Card variant="outlined" sx={{ textAlign: 'center' }}>
+                            <CardContent sx={{ py: 1.5 }}>
+                              <Agriculture color="primary" sx={{ fontSize: 28, mb: 0.5 }} />
+                              <Typography variant="h5" color="primary.main" sx={{ fontWeight: 700 }}>
+                                {calcResults.areaPerBag}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">ha por bolsa</Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Card variant="outlined" sx={{ textAlign: 'center' }}>
+                            <CardContent sx={{ py: 1.5 }}>
+                              <Calculate color="primary" sx={{ fontSize: 28, mb: 0.5 }} />
+                              <Typography variant="h5" color="primary.main" sx={{ fontWeight: 700 }}>
+                                {calcResults.totalSeed}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">{calcResults.unit} totales</Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Card variant="outlined" sx={{ textAlign: 'center' }}>
+                            <CardContent sx={{ py: 1.5 }}>
+                              <Analytics color="primary" sx={{ fontSize: 28, mb: 0.5 }} />
+                              <Typography variant="h5" color="primary.main" sx={{ fontWeight: 700 }}>
+                                {calcResults.seedsPerBag}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">semillas/bolsa</Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      </Grid>
+
+                      {calcSeed?.seeding && (
+                        <Alert severity="info" sx={{ mt: 2 }}>
+                          <Typography variant="body2">
+                            Densidad recomendada: <b>{calcSeed.seeding.plantsPerM2}</b> plantas/m² |
+                            Poder germinativo: <b>{calcSeed.seeding.germinationRate}</b> |
+                            Semillas/gramo: <b>{calcSeed.seeding.seedsPerGram}</b>
+                          </Typography>
+                        </Alert>
+                      )}
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Variety comparison */}
+          <Card sx={{ mt: 3 }}>
+            <CardHeader
+              title="Comparación de Variedades"
+              subheader="Rendimiento de siembra estimado por variedad"
+              className="u-bg-green-primary-light"
+              titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600 }}
+            />
+            <CardContent>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Variedad</TableCell>
+                      <TableCell align="center">Tipo</TableCell>
+                      <TableCell align="center">Tasa siembra</TableCell>
+                      <TableCell align="center">Bolsa</TableCell>
+                      <TableCell align="center">Plantas/m²</TableCell>
+                      <TableCell align="center">ha/bolsa</TableCell>
+                      <TableCell align="center">Bolsas/ha</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {seedsDatabase.filter(s => s.seeding).slice(0, 10).map((seed) => {
+                      const rate = parseFloat(seed.seeding!.rate.split('-')[0]) || 20;
+                      const bag = parseFloat(seed.seeding!.bagSize) || 25;
+                      return (
+                        <TableRow key={seed.id}
+                          hover
+                          sx={{ cursor: 'pointer' }}
+                          onClick={() => { handleCalcSeedSelect(seed); setActiveTab(1); }}
+                        >
+                          <TableCell sx={{ fontWeight: 600 }}>{seed.name}</TableCell>
+                          <TableCell align="center"><Chip label={seed.type} size="small" variant="outlined" /></TableCell>
+                          <TableCell align="center">{seed.seeding!.rate} {seed.seeding!.rateUnit}</TableCell>
+                          <TableCell align="center">{seed.seeding!.bagSize} {seed.seeding!.bagUnit}</TableCell>
+                          <TableCell align="center">{seed.seeding!.plantsPerM2}</TableCell>
+                          <TableCell align="center">{(bag / rate).toFixed(2)}</TableCell>
+                          <TableCell align="center">{Math.ceil(rate / bag)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
         </Box>
       )}
     </Box>

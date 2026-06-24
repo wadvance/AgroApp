@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import type { FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, type Firestore, collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit } from 'firebase/firestore';
+import { getFirestore, type Firestore, collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, where } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Your web app's Firebase configuration
@@ -30,6 +30,9 @@ export const diagnosesCollection = collection(db, 'diagnoses');
 export const recommendationsCollection = collection(db, 'recommendations');
 export const weatherCollection = collection(db, 'weather');
 export const chatMessagesCollection = collection(db, 'chatMessages');
+export const cropsCollection = collection(db, 'crops');
+export const irrigationsCollection = collection(db, 'irrigations');
+export const waterStatusCollection = collection(db, 'waterStatus');
 
 // Helper functions for Firestore operations
 export const firebaseService = {
@@ -112,6 +115,59 @@ export const firebaseService = {
     return { id: docRef.id, ...messageData };
   },
   
+  // Crops
+  getCrops: async (userId: string) => {
+    const q = query(cropsCollection, where('userId', '==', userId), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+
+  getCropById: async (id: string) => {
+    const cropDoc = await getDoc(doc(db, 'crops', id));
+    return cropDoc.exists() ? { id: cropDoc.id, ...cropDoc.data() } : null;
+  },
+
+  createCrop: async (cropData: any) => {
+    const docRef = doc(cropsCollection);
+    await setDoc(docRef, { ...cropData, createdAt: new Date(), updatedAt: new Date() });
+    return { id: docRef.id, ...cropData };
+  },
+
+  updateCrop: async (id: string, cropData: any) => {
+    const cropRef = doc(db, 'crops', id);
+    await updateDoc(cropRef, { ...cropData, updatedAt: new Date() });
+    return { id, ...cropData };
+  },
+
+  deleteCrop: async (id: string) => {
+    await deleteDoc(doc(db, 'crops', id));
+  },
+
+  // Irrigations
+  getIrrigations: async (cropId: string) => {
+    const q = query(irrigationsCollection, where('cropId', '==', cropId), orderBy('date', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+
+  createIrrigation: async (irrigationData: any) => {
+    const docRef = doc(irrigationsCollection);
+    await setDoc(docRef, { ...irrigationData, createdAt: new Date() });
+    return { id: docRef.id, ...irrigationData };
+  },
+
+  getWaterStatus: async (cropId: string) => {
+    const q = query(waterStatusCollection, where('cropId', '==', cropId), orderBy('date', 'desc'), limit(7));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+
+  saveWaterStatus: async (statusData: any) => {
+    const docRef = doc(waterStatusCollection);
+    await setDoc(docRef, { ...statusData, createdAt: new Date() });
+    return { id: docRef.id, ...statusData };
+  },
+
   // File upload
   uploadFile: async (file: File, path: string): Promise<string> => {
     const storageRef = ref(storage, path);

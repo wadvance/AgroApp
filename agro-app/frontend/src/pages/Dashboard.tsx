@@ -1,15 +1,18 @@
 import React from 'react';
 import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  Stack,
-  Button,
+  Box, Typography, Grid, Card, CardContent, CardHeader, Stack, Button,
+  Chip, Alert,
 } from '@mui/material';
-import { LocalFlorist, Analytics, Calculate, Chat, TrendingUp, WaterDrop, BugReport } from '@mui/icons-material';
+import {
+  LocalFlorist, Analytics, Chat, WaterDrop,
+  BugReport, Download, Notifications, Agriculture, Spa, CalendarMonth,
+} from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { firebaseService } from '../firebase';
+import { useAuth } from '../context/AuthContext';
+import { seedsDatabase } from '../data/seeds';
+import { exportCropsToCSV, exportSeedsToCSV } from '../utils/exportData';
+import { requestNotificationPermission, sendWeatherAlert } from '../utils/notifications';
 
 const BarChart: React.FC<{ data: { label: string; value: number; color: string }[]; height?: number }> = ({ data, height = 200 }) => {
   const maxValue = Math.max(...data.map(d => d.value), 1);
@@ -19,88 +22,149 @@ const BarChart: React.FC<{ data: { label: string; value: number; color: string }
       {data.map((item, i) => (
         <Box key={i} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
           <Typography variant="caption" sx={{ fontWeight: 600 }}>{item.value}</Typography>
-          <Box
-            sx={{
-              width: barWidth,
-              height: `${(item.value / maxValue) * (height - 40)}px`,
-              bgcolor: item.color,
-              borderRadius: '4px 4px 0 0',
-              transition: 'height 0.3s',
-              minHeight: 4,
-            }}
-          />
-          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.65rem' }}>
-            {item.label}
-          </Typography>
+          <Box sx={{ width: barWidth, height: `${(item.value / maxValue) * (height - 40)}px`, bgcolor: item.color, borderRadius: '4px 4px 0 0', transition: 'height 0.3s', minHeight: 4 }} />
+          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.65rem' }}>{item.label}</Typography>
         </Box>
       ))}
     </Box>
   );
 };
 
-const DonutChart: React.FC<{ value: number; max: number; label: string; color: string; size?: number }> = ({ value, max, label, color, size = 120 }) => {
-  const percentage = Math.min((value / max) * 100, 100);
-  const circumference = 2 * Math.PI * 45;
-  const offset = circumference - (percentage / 100) * circumference;
-
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-      <svg width={size} height={size} viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border-primary)" strokeWidth="8" />
-        <circle
-          cx="50" cy="50" r="45" fill="none" stroke={color} strokeWidth="8"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform="rotate(-90 50 50)"
-          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
-        />
-        <text x="50" y="50" textAnchor="middle" dominantBaseline="central" fontSize="20" fontWeight="bold" fill="var(--text-primary)">
-          {Math.round(percentage)}%
-        </text>
-      </svg>
-      <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>{label}</Typography>
-    </Box>
-  );
-};
-
 const Dashboard: React.FC = () => {
-  const monthlyData = [
-    { label: 'Ene', value: 65, color: 'var(--green-primary-light)' },
-    { label: 'Feb', value: 72, color: 'var(--green-primary-light)' },
-    { label: 'Mar', value: 68, color: 'var(--green-primary-light)' },
-    { label: 'Abr', value: 80, color: 'var(--green-primary)' },
-    { label: 'May', value: 85, color: 'var(--green-primary)' },
-    { label: 'Jun', value: 78, color: 'var(--green-primary-light)' },
-  ];
+  const { user } = useAuth();
+  const [crops, setCrops] = React.useState<any[]>([]);
+  const [irrigations, setIrrigations] = React.useState<any[]>([]);
+  const [weatherData, setWeatherData] = React.useState<any>(null);
+  const [diagnoses, setDiagnoses] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [notifGranted, setNotifGranted] = React.useState(false);
 
-  const cropDistribution = [
-    { label: 'Maíz', value: 45, color: 'var(--green-primary)' },
-    { label: 'Trigo', value: 25, color: 'var(--green-primary-light)' },
-    { label: 'Soja', value: 20, color: 'var(--brown-primary)' },
-    { label: 'Otros', value: 10, color: 'var(--accent-yellow)' },
-  ];
+  React.useEffect(() => {
+    if (user) loadData();
+  }, [user]);
+
+  React.useEffect(() => {
+    setNotifGranted(Notification.permission === 'granted');
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const [cropsData, weatherDataResult, diagnosesData] = await Promise.all([
+        firebaseService.getCrops(user!.uid),
+        firebaseService.getWeatherData(),
+        firebaseService.getDiagnoses(),
+      ]);
+      setCrops(cropsData);
+      setWeatherData(weatherDataResult);
+      setDiagnoses(diagnosesData);
+
+      const allIrrigations: any[] = [];
+      for (const crop of cropsData) {
+        try {
+          const irrs = await firebaseService.getIrrigations(crop.id);
+          allIrrigations.push(...irrs);
+        } catch { /* silent */ }
+      }
+      setIrrigations(allIrrigations);
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const activeCrops = crops.filter(c => c.status === 'active');
+  const harvestedCrops = crops.filter(c => c.status === 'harvested');
+  const totalIrrigation = irrigations.reduce((sum, ir) => sum + (ir.amount || 0), 0);
+  const recentDiagnoses = diagnoses.slice(0, 5);
+
+  const cropVarieties: Record<string, number> = {};
+  activeCrops.forEach(c => {
+    cropVarieties[c.cropVariety] = (cropVarieties[c.cropVariety] || 0) + 1;
+  });
+  const cropChartData = Object.entries(cropVarieties).slice(0, 6).map(([name, count]) => ({
+    label: name,
+    value: count,
+    color: name === 'Maíz' ? 'var(--green-primary)' :
+           name === 'Arroz' ? 'var(--green-primary-light)' :
+           name === 'Frijol' ? 'var(--brown-primary)' :
+           name === 'Tomate' ? 'var(--accent-yellow)' :
+           name === 'Café Arábica' ? 'var(--accent-blue)' : 'var(--green-primary-lighter)',
+  }));
+
+  const totalArea = crops.reduce((sum, c) => sum + (c.area || 0), 0);
+  const avgSoilMoisture = weatherData?.humidity ? Math.min(100, weatherData.humidity * 0.8 + 20) : 0;
+
+  const handleExport = () => {
+    if (crops.length > 0) exportCropsToCSV(crops);
+  };
+
+  const handleExportSeeds = () => {
+    exportSeedsToCSV(seedsDatabase);
+  };
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestNotificationPermission();
+    setNotifGranted(granted);
+    if (granted) {
+      sendWeatherAlert('Notificaciones activadas — recibirás alertas de riego y clima');
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ p: { xs: 2, md: 3 }, display: 'flex', justifyContent: 'center', pt: 8 }}>
+        <Typography variant="h6" color="text.secondary">Cargando panel de control...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
-      <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
-        Panel de Control
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Typography variant="h4" className="u-font-weight-semibold u-text-green-primary">
+          Panel de Control
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          {!notifGranted && (
+            <Button variant="outlined" size="small" startIcon={<Notifications />} onClick={handleEnableNotifications}>
+              Activar Notificaciones
+            </Button>
+          )}
+          {notifGranted && (
+            <Chip icon={<Notifications />} label="Notificaciones activas" color="success" size="small" variant="outlined" />
+          )}
+          <Button variant="outlined" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length}>
+            Exportar Cultivos
+          </Button>
+          <Button variant="outlined" size="small" startIcon={<Download />} onClick={handleExportSeeds}>
+            Exportar Semillas
+          </Button>
+        </Stack>
+      </Box>
 
-      {/* Top metric cards */}
+      {crops.length === 0 && (
+                <Alert severity="info" sx={{ mb: 2 }} action={
+          <Button color="inherit" size="small" component={Link} to="/crops">Ir a Cultivos</Button>
+        }>
+          No hay cultivos registrados. Comienza agregando tu primer cultivo.
+        </Alert>
+      )}
+
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 6, md: 3 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
             <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
               <Stack spacing={1}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">Salud del Cultivo</Typography>
-                  <TrendingUp sx={{ fontSize: 20, color: 'var(--green-primary)' }} />
+                  <Typography variant="body2" color="text.secondary">Cultivos Activos</Typography>
+                  <Agriculture sx={{ fontSize: 20, color: 'var(--green-primary)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-green-primary">85%</Typography>
+                <Typography variant="h4" className="u-font-weight-bold u-text-green-primary">{activeCrops.length}</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--green-primary-lightest)', borderRadius: 3 }}>
-                  <Box sx={{ width: '85%', height: '100%', bgcolor: 'var(--green-primary)', borderRadius: 3 }} />
+                  <Box sx={{ width: `${activeCrops.length > 0 ? Math.min(100, (activeCrops.length / (crops.length || 1)) * 100) : 0}%`, height: '100%', bgcolor: 'var(--green-primary)', borderRadius: 3 }} />
                 </Box>
+                {totalArea > 0 && <Typography variant="caption" color="text.secondary">{totalArea.toFixed(1)} ha totales</Typography>}
               </Stack>
             </CardContent>
           </Card>
@@ -110,13 +174,14 @@ const Dashboard: React.FC = () => {
             <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
               <Stack spacing={1}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">Humedad Suelo</Typography>
+                  <Typography variant="body2" color="text.secondary">Humedad del Suelo</Typography>
                   <WaterDrop sx={{ fontSize: 20, color: 'var(--accent-blue)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-accent-blue">62%</Typography>
+                <Typography variant="h4" className="u-font-weight-bold u-text-accent-blue">{avgSoilMoisture.toFixed(0)}%</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--info-bg)', borderRadius: 3 }}>
-                  <Box sx={{ width: '62%', height: '100%', bgcolor: 'var(--accent-blue)', borderRadius: 3 }} />
+                  <Box sx={{ width: `${avgSoilMoisture}%`, height: '100%', bgcolor: 'var(--accent-blue)', borderRadius: 3 }} />
                 </Box>
+                <Typography variant="caption" color="text.secondary">Basado en datos climáticos</Typography>
               </Stack>
             </CardContent>
           </Card>
@@ -126,13 +191,14 @@ const Dashboard: React.FC = () => {
             <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
               <Stack spacing={1}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">Rendimiento</Typography>
-                  <Calculate sx={{ fontSize: 20, color: 'var(--brown-primary)' }} />
+                  <Typography variant="body2" color="text.secondary">Riego Total</Typography>
+                  <WaterDrop sx={{ fontSize: 20, color: 'var(--brown-primary)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-brown-primary">4.2 t/ha</Typography>
+                <Typography variant="h4" className="u-font-weight-bold u-text-brown-primary">{totalIrrigation.toFixed(0)} mm</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--brown-primary-lightest)', borderRadius: 3 }}>
-                  <Box sx={{ width: '70%', height: '100%', bgcolor: 'var(--brown-primary)', borderRadius: 3 }} />
+                  <Box sx={{ width: `${Math.min(100, totalIrrigation / 2)}%`, height: '100%', bgcolor: 'var(--brown-primary)', borderRadius: 3 }} />
                 </Box>
+                <Typography variant="caption" color="text.secondary">{irrigations.length} riegos registrados</Typography>
               </Stack>
             </CardContent>
           </Card>
@@ -142,52 +208,75 @@ const Dashboard: React.FC = () => {
             <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
               <Stack spacing={1}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">Alertas Activas</Typography>
+                  <Typography variant="body2" color="text.secondary">Diagnósticos</Typography>
                   <BugReport sx={{ fontSize: 20, color: 'var(--error)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-error">3</Typography>
+                <Typography variant="h4" className="u-font-weight-bold u-text-error">{diagnoses.length}</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--error-bg)', borderRadius: 3 }}>
-                  <Box sx={{ width: '30%', height: '100%', bgcolor: 'var(--error)', borderRadius: 3 }} />
+                  <Box sx={{ width: `${Math.min(100, diagnoses.length * 10)}%`, height: '100%', bgcolor: 'var(--error)', borderRadius: 3 }} />
                 </Box>
+                <Typography variant="caption" color="text.secondery">análisis realizados</Typography>
               </Stack>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Charts row */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, md: 7 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
             <CardHeader
-              title="Rendimiento Mensual (toneladas)"
+              title="Cultivos por Variedad"
+              subheader={activeCrops.length > 0 ? `${activeCrops.length} cultivos activos` : 'Sin datos'}
               className="u-bg-green-primary-light"
               titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600 }}
             />
             <CardContent>
-              <BarChart data={monthlyData} height={180} />
+              {cropChartData.length > 0 ? (
+                <BarChart data={cropChartData} height={180} />
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                  Agrega cultivos para ver la distribución
+                </Typography>
+              )}
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, md: 5 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
             <CardHeader
-              title="Distribución de Cultivos"
+              title="Resumen Rápido"
               className="u-bg-green-primary-light"
               titleTypographyProps={{ variant: 'subtitle1', fontWeight: 600 }}
             />
             <CardContent>
-              <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap', gap: 2 }}>
-                {cropDistribution.map((crop, i) => (
-                  <DonutChart key={i} value={crop.value} max={100} label={crop.label} color={crop.color} size={100} />
-                ))}
+              <Stack spacing={1.5}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">Cultivos activos</Typography>
+                  <Chip label={activeCrops.length} color="success" size="small" />
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">Cosechados</Typography>
+                  <Chip label={harvestedCrops.length} color="info" size="small" />
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">Variedades distintas</Typography>
+                  <Chip label={Object.keys(cropVarieties).length} color="primary" size="small" />
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">Total área cultivada</Typography>
+                  <Chip label={`${totalArea.toFixed(1)} ha`} color="secondary" size="small" />
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">Temperatura actual</Typography>
+                  <Chip label={weatherData?.temperature ? `${weatherData.temperature}°C` : '—'} size="small" />
+                </Box>
               </Stack>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Bottom section */}
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 8 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
@@ -198,22 +287,47 @@ const Dashboard: React.FC = () => {
             />
             <CardContent>
               <Stack spacing={1.5}>
-                {[
-                  { text: 'Análisis de muestra de suelo completado', time: 'Hoy, 10:30 AM', color: 'var(--text-primary)' },
-                  { text: 'Programa de fertilización actualizado', time: 'Ayer, 3:45 PM', color: 'var(--text-primary)' },
-                  { text: 'Alerta de plaga detectada en lote 3', time: 'Hoy, 8:15 AM', color: 'var(--error)' },
-                  { text: 'Recomendación de rotación de cultivos', time: 'Ayer, 6:20 PM', color: 'var(--text-primary)' },
-                  { text: 'Riego automático activado en lote 1', time: 'Hoy, 6:00 AM', color: 'var(--text-primary)' },
-                ].map((item, i) => (
-                  <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i < 4 ? '1px solid var(--border-primary)' : 'none', pb: i < 4 ? 1.5 : 0 }}>
-                    <Typography variant="body2" sx={{ color: item.color, fontWeight: item.color === 'var(--error)' ? 600 : 400 }}>
-                      {item.text}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
-                      {item.time}
-                    </Typography>
-                  </Box>
-                ))}
+                {crops.length === 0 && irrigations.length === 0 && diagnoses.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+                    No hay actividad reciente. Comienza agregando un cultivo.
+                  </Typography>
+                ) : (
+                  <>
+                    {crops.slice(0, 3).map((crop: any) => (
+                      <Box key={crop.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-primary)', pb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Spa fontSize="small" color="success" />
+                          <Typography variant="body2">{crop.name} — {crop.cropVariety}</Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {crop.createdAt?.toDate?.()?.toLocaleDateString?.('es-ES') || 'Recién agregado'}
+                        </Typography>
+                      </Box>
+                    ))}
+                    {irrigations.slice(0, 3).map((ir: any) => (
+                      <Box key={ir.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-primary)', pb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <WaterDrop fontSize="small" color="info" />
+                          <Typography variant="body2">Riego: {ir.amount} {ir.unit}</Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {ir.date ? new Date(ir.date).toLocaleDateString('es-ES') : ''}
+                        </Typography>
+                      </Box>
+                    ))}
+                    {recentDiagnoses.map((d: any) => (
+                      <Box key={d.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Analytics fontSize="small" color="warning" />
+                          <Typography variant="body2">{d.cropType || 'Diagnóstico'} — {d.result || d.disease || 'Saludable'}</Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {d.createdAt?.toDate?.()?.toLocaleDateString?.('es-ES') || ''}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </>
+                )}
               </Stack>
             </CardContent>
           </Card>
@@ -227,16 +341,19 @@ const Dashboard: React.FC = () => {
             />
             <CardContent>
               <Stack spacing={1.5}>
-                <Button variant="contained" color="primary" size="small" fullWidth startIcon={<LocalFlorist />}>
+                <Button variant="contained" color="primary" size="small" fullWidth startIcon={<Agriculture />} component={Link} to="/crops">
+                  Gestionar Cultivos
+                </Button>
+                <Button variant="contained" color="secondary" size="small" fullWidth startIcon={<WaterDrop />} component={Link} to="/irrigation">
+                  Necesidades de Riego
+                </Button>
+                <Button variant="outlined" color="primary" size="small" fullWidth startIcon={<LocalFlorist />} component={Link} to="/seeds">
                   Identificar Semillas
                 </Button>
-                <Button variant="contained" color="secondary" size="small" fullWidth startIcon={<Analytics />}>
-                  Diagnóstico de Cultivo
+                <Button variant="outlined" color="secondary" size="small" fullWidth startIcon={<CalendarMonth />} component={Link} to="/calendar">
+                  Calendario de Cultivos
                 </Button>
-                <Button variant="outlined" color="primary" size="small" fullWidth startIcon={<Calculate />}>
-                  Calculadora de Cosecha
-                </Button>
-                <Button variant="outlined" color="secondary" size="small" fullWidth startIcon={<Chat />}>
+                <Button variant="outlined" size="small" fullWidth startIcon={<Chat />} component={Link} to="/chat">
                   Chat con Agrónomo IA
                 </Button>
               </Stack>
