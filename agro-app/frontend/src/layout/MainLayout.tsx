@@ -149,6 +149,7 @@ const MainLayout: React.FC = () => {
     { to: '/seeds', icon: <LocalFloristIcon />, label: 'Semillas' },
     { to: '/diagnosis', icon: <AnalyticsIcon />, label: 'Diagnóstico' },
     { to: '/weather', icon: <CloudIcon />, label: 'Clima' },
+    { to: '/map', icon: <MapIcon />, label: 'Mapas' },
     { to: '/chat', icon: <ChatIcon />, label: 'Chat' },
   ];
 
