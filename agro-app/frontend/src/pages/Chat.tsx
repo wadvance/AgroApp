@@ -18,31 +18,34 @@ import { LocalFlorist, Agriculture, Send, Calculate, Cloud, Menu as MenuIcon } f
 const SIDEBAR_WIDTH = 280;
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = React.useState<any[]>([]);
+  const [messages, setMessages] = React.useState<any[]>([
+    { id: 1, text: 'PRUEBA-USUARIO', sender: 'user', timestamp: new Date() },
+    { id: 2, text: 'PRUEBA-BOT', sender: 'bot', timestamp: new Date() }
+  ]);
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async (messageText?: string) => {
+    const textToSend = messageText || input;
+    if (!textToSend.trim()) return;
     
     const userMessage = {
       id: Date.now(),
-      text: input,
+      text: textToSend,
       sender: 'user',
       timestamp: new Date()
     };
     
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    if (!messageText) setInput('');
     setLoading(true);
     
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      const aiResponse = generateAIResponse(input);
       const botMessage = {
         id: Date.now() + 1,
-        text: aiResponse,
+        text: 'Respuesta prueba - hola mundo',
         sender: 'bot',
         timestamp: new Date()
       };
@@ -51,47 +54,13 @@ const ChatPage: React.FC = () => {
       console.error('Error getting AI response:', error);
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
-        text: 'Lo siento, hubo un error procesando su consulta. Por favor intente nuevamente.',
+        text: 'Lo siento, hubo un error procesando su consulta.',
         sender: 'bot',
         timestamp: new Date()
       }]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const generateAIResponse = (message: string): string => {
-    const lowerMsg = message.toLowerCase();
-    
-    if (lowerMsg.includes('hola') || lowerMsg.includes('buenos días') || lowerMsg.includes('buenas tardes') || lowerMsg.includes('buenas noches')) {
-      return '¡Hola! Soy su agrónomo virtual. ¿En qué puedo ayudarle hoy con su cultivo?';
-    }
-    
-    if (lowerMsg.includes('riego') || lowerMsg.includes('agua') || lowerMsg.includes('irrigar')) {
-      return 'Para determinar las necesidades de riego de su cultivo, necesito saber: ¿Qué tipo de cultivo tiene? ¿En qué etapa de crecimiento se encuentra? ¿Cuál es el tipo de suelo de su campo? Con esta información puedo calcular sus necesidades hídricas exactas.';
-    }
-    
-    if (lowerMsg.includes('fertilizante') || lowerMsg.includes('nutriente') || lowerMsg.includes('nitrógeno') || lowerMsg.includes('fósforo') || lowerMsg.includes('potasio')) {
-      return 'La fertilización adecuada depende del cultivo, etapa de crecimiento y análisis de suelo. ¿Podría proporcionarme esos detalles? También puedo ayudarle a interpretar resultados de análisis de suelo si los tiene disponibles.';
-    }
-    
-    if (lowerMsg.includes('plaga') || lowerMsg.includes('enfermedad') || lowerMsg.includes('hongo') || lowerMsg.includes('virus') || lowerMsg.includes('insecto')) {
-      return 'Para ayudarle con el diagnóstico de plagas o enfermedades, sería útil si pudiera describir los síntomas que observa o, mejor aún, compartir una imagen de las partes afectadas. ¿Qué cultivo tiene y qué síntomas está viendo?';
-    }
-    
-    if (lowerMsg.includes('semilla') || lowerMsg.includes('variedad') || lowerMsg.includes('siembra')) {
-      return 'La elección de la variedad de semilla adecuada es crucial para el éxito de su cultivo. Factores como el clima local, tipo de suelo, resistencia a enfermedades y ciclo de crecimiento deben considerarse. ¿Para qué cultivo está buscando recomendaciones de semilla?';
-    }
-    
-    if (lowerMsg.includes('cosecha') || lowerMsg.includes('rendimiento') || lowerMsg.includes('producción')) {
-      return 'Para estimar el rendimiento esperado de su cultivo, necesito conocer: el tipo de cultivo, área a sembrar, condiciones del suelo y historial de rendimientos en su zona. ¿Tiene esta información disponible?';
-    }
-    
-    if (lowerMsg.includes('clima') || lowerMsg.includes('tiempo') || lowerMsg.includes('temperatura') || lowerMsg.includes('helada') || lowerMsg.includes('sequía')) {
-      return 'El monitoreo climático es esencial para la toma de decisiones agrícolas. ¿Le gustaría que le proporcione el pronóstico del tiempo específico para su zona o información sobre cómo ciertas condiciones climáticas afectan su cultivo actual?';
-    }
-    
-    return 'Gracias por su consulta. Para brindarle una recomendación más precisa y personalizada, ¿podría proporcionarme más detalles sobre su cultivo específico, incluyendo tipo de planta, etapa de crecimiento, ubicación geográfica y cualquier problema particular que esté experimentando?';
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -119,10 +88,7 @@ const ChatPage: React.FC = () => {
             color="primary" 
             size="small"
             startIcon={<LocalFlorist fontSize="inherit" />}
-            onClick={() => {
-              setInput('¿Qué variedad de semilla es mejor para mi zona?');
-              sendMessage();
-            }}
+            onClick={() => sendMessage('¿Qué variedad de semilla es mejor para mi zona?')}
           >
             Semillas
           </Button>
@@ -131,10 +97,7 @@ const ChatPage: React.FC = () => {
             color="primary" 
             size="small"
             startIcon={<Agriculture fontSize="inherit" />}
-            onClick={() => {
-              setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?');
-              sendMessage();
-            }}
+            onClick={() => sendMessage('¿Cómo detecto tempranamente enfermedades en mi cultivo?')}
           >
             Diagnóstico
           </Button>
@@ -143,10 +106,7 @@ const ChatPage: React.FC = () => {
             color="primary" 
             size="small"
             startIcon={<Calculate fontSize="inherit" />}
-            onClick={() => {
-              setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?');
-              sendMessage();
-            }}
+            onClick={() => sendMessage('¿Cómo calculo el rendimiento esperado de mi cultivo?')}
           >
             Cálculo
           </Button>
@@ -155,10 +115,7 @@ const ChatPage: React.FC = () => {
             color="primary" 
             size="small"
             startIcon={<Cloud fontSize="inherit" />}
-            onClick={() => {
-              setInput('¿Cuál es el pronóstico del tiempo para los próximos días?');
-              sendMessage();
-            }}
+            onClick={() => sendMessage('¿Cuál es el pronóstico del tiempo para los próximos días?')}
           >
             Clima
           </Button>
@@ -188,12 +145,10 @@ const ChatPage: React.FC = () => {
 
   return (
     <Box component="main" sx={{ p: { xs: 1, sm: 2, md: 3 }, display: 'flex', height: 'calc(100vh - 64px)', gap: 2 }}>
-      {/* Desktop sidebar */}
       <Box sx={{ display: { xs: 'none', md: 'block' }, width: SIDEBAR_WIDTH, borderRight: '1px solid var(--border-primary)' }}>
         {sidebarContent}
       </Box>
 
-      {/* Mobile drawer */}
       <Drawer
         anchor="left"
         open={sidebarOpen}
@@ -202,7 +157,6 @@ const ChatPage: React.FC = () => {
         {sidebarContent}
       </Drawer>
       
-      {/* Main chat area */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <Card className="u-bg-card u-shadow-sm" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <CardHeader
@@ -224,10 +178,10 @@ const ChatPage: React.FC = () => {
           />
           <CardContent sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Chip icon={<LocalFlorist />} label="Semillas" size="small" onClick={() => { setInput('¿Qué variedad de semilla es mejor para mi zona?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Agriculture />} label="Diagnóstico" size="small" onClick={() => { setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Calculate />} label="Cálculo" size="small" onClick={() => { setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
-              <Chip icon={<Cloud />} label="Clima" size="small" onClick={() => { setInput('¿Cuál es el pronóstico del tiempo para los próximos días?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<LocalFlorist />} label="Semillas" size="small" onClick={() => sendMessage('¿Qué variedad de semilla es mejor para mi zona?')} variant="outlined" color="primary" />
+              <Chip icon={<Agriculture />} label="Diagnóstico" size="small" onClick={() => sendMessage('¿Cómo detecto tempranamente enfermedades en mi cultivo?')} variant="outlined" color="primary" />
+              <Chip icon={<Calculate />} label="Cálculo" size="small" onClick={() => sendMessage('¿Cómo calculo el rendimiento esperado de mi cultivo?')} variant="outlined" color="primary" />
+              <Chip icon={<Cloud />} label="Clima" size="small" onClick={() => sendMessage('¿Cuál es el pronóstico del tiempo para los próximos días?')} variant="outlined" color="primary" />
             </Box>
             {messages.length === 0 ? (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -236,42 +190,20 @@ const ChatPage: React.FC = () => {
                 </Typography>
               </Box>
             ) : (
-              <Box sx={{ display: 'flex', flexDirection: 'column-reverse' }}>
-                {messages.map((msg: any) => (
-                  <Box 
-                    key={msg.id} 
-                    sx={{ 
-                      display: 'flex', 
-                      mb: 2, 
-                      justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    {msg.sender === 'bot' && (
-                      <Avatar sx={{ bgcolor: 'var(--green-primary)', width: 28, height: 28, mr: 1, mt: 0.5, flexShrink: 0 }}>
-                        IA
-                      </Avatar>
-                    )}
-                    <Box 
-                      sx={{ 
-                        maxWidth: { xs: '85%', sm: '75%', md: '70%' }, 
-                        p: 1.5, 
-                        borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                        backgroundColor: msg.sender === 'user' ? 'var(--green-primary)' : 'var(--gray-100)',
-                        color: msg.sender === 'user' ? '#fff' : 'var(--text-primary)'
-                      }}
-                    >
-                      <Typography variant="body1" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
-                        {msg.text}
-                      </Typography>
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                        <Typography variant="caption" sx={{ color: msg.sender === 'user' ? 'rgba(255,255,255,0.7)' : 'var(--text-secondary)' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column-reverse', overflowY: 'auto', flex: 1 }}>
+                {messages.map((msg: any) => {
+                  const isUser = msg.sender === 'user';
+                  return (
+                    <div key={msg.id} style={{ display: 'flex', marginBottom: '16px', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+                      <div style={{ maxWidth: '80%', padding: '12px', borderRadius: '12px', backgroundColor: isUser ? '#2E7D32' : '#CCCCCC', color: isUser ? '#FFFFFF' : '#000000', fontSize: '16px', fontFamily: 'Arial, sans-serif' }}>
+                        <div>{msg.text}</div>
+                        <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', color: isUser ? 'rgba(255,255,255,0.7)' : '#666666' }}>
                           {msg.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
                 {loading && (
                   <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -298,27 +230,22 @@ const ChatPage: React.FC = () => {
                 multiline
                 maxRows={3}
               />
-<Button 
-  variant="contained" 
-  color="primary" 
-  size="medium"
-  onClick={sendMessage}
-  disabled={loading || !input.trim()}
-  sx={{ 
-    minWidth: { xs: 40, sm: 120 }, 
-    py: 0.75, 
-    px: { xs: 1, sm: 1.5 },
-    textTransform: 'none'
-  }}
->
-  <Box component="span" sx={{ display: { xs: 'inline-block', sm: 'none' } }}>
-    {loading ? '...' : <Send fontSize="small" />}
-  </Box>
-  <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5 }}>
-    <Send fontSize="inherit" />
-    {loading ? 'Enviando...' : 'Enviar'}
-  </Box>
-</Button>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                size="medium"
+                onClick={() => sendMessage()}
+                disabled={loading || !input.trim()}
+                sx={{ minWidth: { xs: 40, sm: 120 }, py: 0.75, px: { xs: 1, sm: 1.5 }, textTransform: 'none' }}
+              >
+                <Box component="span" sx={{ display: { xs: 'inline-block', sm: 'none' } }}>
+                  {loading ? '...' : <Send fontSize="small" />}
+                </Box>
+                <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5 }}>
+                  <Send fontSize="inherit" />
+                  {loading ? 'Enviando...' : 'Enviar'}
+                </Box>
+              </Button>
             </Stack>
           </Box>
         </Card>

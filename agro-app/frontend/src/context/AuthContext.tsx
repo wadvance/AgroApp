@@ -31,19 +31,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!isMounted) return;
       setUser(firebaseUser);
       if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (userDoc.exists()) {
-          setRole(userDoc.data().role as UserRole);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) {
+            setRole(userDoc.data().role as UserRole);
+          }
+        } catch (error) {
+          console.error('Error fetching user role:', error);
         }
       } else {
         setRole(null);
       }
-      setLoading(false);
+      if (isMounted) setLoading(false);
+    }, (error) => {
+      console.error('Auth state change error:', error);
+      if (isMounted) setLoading(false);
     });
-    return unsubscribe;
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
