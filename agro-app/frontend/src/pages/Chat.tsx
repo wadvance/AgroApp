@@ -11,6 +11,7 @@ import {
   Avatar,
   IconButton,
   Drawer,
+  Chip,
 } from '@mui/material';
 import { LocalFlorist, Agriculture, Send, Calculate, Cloud, Menu as MenuIcon } from '@mui/icons-material';
 
@@ -278,6 +279,12 @@ const ChatPage: React.FC = () => {
             )}
           </CardContent>
           <Box sx={{ p: { xs: 1.5, sm: 2 }, borderTop: '1px solid var(--border-primary)' }}>
+            <Stack direction="row" spacing={1} sx={{ mb: 1, display: { xs: 'flex', md: 'none' }, overflowX: 'auto', pb: 0.5 }}>
+              <Chip icon={<LocalFlorist />} label="Semillas" size="small" onClick={() => { setInput('¿Qué variedad de semilla es mejor para mi zona?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Agriculture />} label="Diagnóstico" size="small" onClick={() => { setInput('¿Cómo detecto tempranamente enfermedades en mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Calculate />} label="Cálculo" size="small" onClick={() => { setInput('¿Cómo calculo el rendimiento esperado de mi cultivo?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+              <Chip icon={<Cloud />} label="Clima" size="small" onClick={() => { setInput('¿Cuál es el pronóstico del tiempo para los próximos días?'); setTimeout(sendMessage, 0); }} variant="outlined" color="primary" />
+            </Stack>
             <Stack direction="row" spacing={1}>
               <TextField
                 size="small"
