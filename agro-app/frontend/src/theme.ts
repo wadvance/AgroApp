@@ -7,27 +7,39 @@ const themeOptions: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: 'var(--green-primary)',
-      light: 'var(--green-primary-light)',
-      dark: 'var(--green-primary-dark)',
-      contrastText: 'var(--white)',
+      main: '#2E7D32',
+      light: '#4CAF50',
+      dark: '#1B5E20',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: 'var(--brown-primary)',
-      light: 'var(--brown-primary-light)',
-      dark: 'var(--brown-primary-dark)',
-      contrastText: 'var(--white)',
+      main: '#8D6E63',
+      light: '#A1887F',
+      dark: '#6D4C41',
+      contrastText: '#FFFFFF',
+    },
+    success: {
+      main: '#2E7D32',
+    },
+    warning: {
+      main: '#FF9800',
+    },
+    error: {
+      main: '#F44336',
+    },
+    info: {
+      main: '#4FC3F7',
     },
     background: {
-      default: 'var(--bg-primary)',
-      paper: 'var(--bg-card)',
+      default: '#FAFAFA',
+      paper: '#FFFFFF',
     },
     text: {
-      primary: 'var(--text-primary)',
-      secondary: 'var(--text-secondary)',
-      disabled: 'var(--text-disabled)',
+      primary: '#212121',
+      secondary: '#616161',
+      disabled: '#BDBDBD',
     },
-    divider: 'var(--border-primary)',
+    divider: '#EEEEEE',
   },
   // Override typography to use our CSS variables
   typography: {
