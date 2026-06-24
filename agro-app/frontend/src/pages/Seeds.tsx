@@ -435,19 +435,23 @@ const Seeds: React.FC = () => {
     <Box component="main" sx={{ p: 2 }}>
       <BackButton />
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Box sx={{ bgcolor: '#2E7D32', borderRadius: '8px 8px 0 0' }}>
         <Tabs 
           value={activeTab} 
           onChange={(_, v) => setActiveTab(v)}
           sx={{
             '& .MuiTab-root': { 
-              fontSize: '0.8rem',
-              minHeight: 48,
+              fontSize: '0.75rem',
+              minHeight: 42,
+              color: 'rgba(255,255,255,0.7)',
+              textTransform: 'none',
             },
             '& .MuiTabs-indicator': { 
-              bgcolor: '#2E7D32',
+              bgcolor: '#fff',
+              height: 3,
             },
             '& .MuiTab-root.Mui-selected': {
-              color: '#2E7D32',
+              color: '#fff',
               fontWeight: 'bold',
             },
           }}
@@ -455,6 +459,7 @@ const Seeds: React.FC = () => {
           <Tab label="Identificador de Semillas" icon={<PhotoCamera />} iconPosition="start" />
           <Tab label="Calculadora de Siembra" icon={<Calculate />} iconPosition="start" />
         </Tabs>
+        </Box>
       </Box>
 
       {activeTab === 0 && (

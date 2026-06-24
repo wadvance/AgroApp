@@ -8,7 +8,7 @@ const BackButton: React.FC = () => {
 
   return (
     <Tooltip title="Volver">
-      <IconButton onClick={() => navigate(-1)} color="primary" size="small" sx={{ mb: 1 }}>
+      <IconButton onClick={() => navigate(-1)} size="small" sx={{ mb: 1, color: '#333' }}>
         <ArrowBack />
       </IconButton>
     </Tooltip>
