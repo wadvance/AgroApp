@@ -1,6 +1,8 @@
 import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
 // Import page components
 import Dashboard from './pages/Dashboard';
 import Seeds from './pages/Seeds';
@@ -39,7 +41,8 @@ function App() {
     <HashRouter>
       <ErrorBoundary>
         <Routes>
-          <Route element={<MainLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/seeds" element={<Seeds />} />
             <Route path="/diagnosis" element={<Diagnosis />} />
