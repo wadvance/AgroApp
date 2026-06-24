@@ -440,11 +440,14 @@ const Seeds: React.FC = () => {
           value={activeTab} 
           onChange={(_, v) => setActiveTab(v)}
           sx={{
+            minHeight: 36,
             '& .MuiTab-root': { 
-              fontSize: '0.75rem',
-              minHeight: 42,
+              fontSize: '0.7rem',
+              minHeight: 36,
+              padding: '6px 12px',
               color: 'rgba(255,255,255,0.7)',
               textTransform: 'none',
+              '& .MuiTab-iconWrapper': { fontSize: '1rem' },
             },
             '& .MuiTabs-indicator': { 
               bgcolor: '#fff',
@@ -456,8 +459,8 @@ const Seeds: React.FC = () => {
             },
           }}
         >
-          <Tab label="Identificador de Semillas" icon={<PhotoCamera />} iconPosition="start" />
-          <Tab label="Calculadora de Siembra" icon={<Calculate />} iconPosition="start" />
+          <Tab label="Identificador" icon={<PhotoCamera />} iconPosition="start" />
+          <Tab label="Calculadora" icon={<Calculate />} iconPosition="start" />
         </Tabs>
         </Box>
       </Box>
