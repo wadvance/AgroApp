@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
           {notifGranted && (
             <Chip icon={<Notifications />} label="Notif activas" color="success" size="small" variant="outlined" />
           )}
-          <Button variant="contained" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length} sx={{ fontSize: '0.7rem', bgcolor: '#1976D2', color: '#fff', '&:hover': { bgcolor: '#1565C0' } }}>
+          <Button variant="contained" size="small" startIcon={<Download />} onClick={handleExport} sx={{ fontSize: '0.7rem', bgcolor: crops.length > 0 ? '#1976D2' : '#9E9E9E', color: '#fff', '&:hover': { bgcolor: crops.length > 0 ? '#1565C0' : '#757575' } }}>
             Export Cult
           </Button>
           <Button variant="contained" size="small" startIcon={<Download />} onClick={handleExportSeeds} sx={{ fontSize: '0.7rem', bgcolor: '#388E3C', color: '#fff', '&:hover': { bgcolor: '#2E7D32' } }}>
