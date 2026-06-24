@@ -221,7 +221,7 @@ const ChatPage: React.FC = () => {
                 </Typography>
               </Box>
             ) : (
-              <Box sx={{ display: 'flex', flexDirection: 'column-reverse', overflowY: 'auto', flex: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
                 {messages.map((msg: any) => {
                   const isUser = msg.sender === 'user';
                   return (
