@@ -160,7 +160,7 @@ const Dashboard: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">Cultivos Activos</Typography>
                   <Agriculture sx={{ fontSize: 20, color: 'var(--green-primary)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-green-primary">{activeCrops.length}</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#2E7D32' }}>{activeCrops.length}</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--green-primary-lightest)', borderRadius: 3 }}>
                   <Box sx={{ width: `${activeCrops.length > 0 ? Math.min(100, (activeCrops.length / (crops.length || 1)) * 100) : 0}%`, height: '100%', bgcolor: 'var(--green-primary)', borderRadius: 3 }} />
                 </Box>
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">Humedad del Suelo</Typography>
                   <WaterDrop sx={{ fontSize: 20, color: 'var(--accent-blue)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-accent-blue">{avgSoilMoisture.toFixed(0)}%</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4FC3F7' }}>{avgSoilMoisture.toFixed(0)}%</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--info-bg)', borderRadius: 3 }}>
                   <Box sx={{ width: `${avgSoilMoisture}%`, height: '100%', bgcolor: 'var(--accent-blue)', borderRadius: 3 }} />
                 </Box>
@@ -194,7 +194,7 @@ const Dashboard: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">Riego Total</Typography>
                   <WaterDrop sx={{ fontSize: 20, color: 'var(--brown-primary)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-brown-primary">{totalIrrigation.toFixed(0)} mm</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#8D6E63' }}>{totalIrrigation.toFixed(0)} mm</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--brown-primary-lightest)', borderRadius: 3 }}>
                   <Box sx={{ width: `${Math.min(100, totalIrrigation / 2)}%`, height: '100%', bgcolor: 'var(--brown-primary)', borderRadius: 3 }} />
                 </Box>
@@ -211,7 +211,7 @@ const Dashboard: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">Diagnósticos</Typography>
                   <BugReport sx={{ fontSize: 20, color: 'var(--error)' }} />
                 </Box>
-                <Typography variant="h4" className="u-font-weight-bold u-text-error">{diagnoses.length}</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#F44336' }}>{diagnoses.length}</Typography>
                 <Box sx={{ height: 6, bgcolor: 'var(--error-bg)', borderRadius: 3 }}>
                   <Box sx={{ width: `${Math.min(100, diagnoses.length * 10)}%`, height: '100%', bgcolor: 'var(--error)', borderRadius: 3 }} />
                 </Box>
@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
       </Grid>
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12, md: 7 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
             <CardHeader
               title="Cultivos por Variedad"
@@ -242,7 +242,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 5 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card className="u-bg-card u-shadow-sm" sx={{ height: '100%' }}>
             <CardHeader
               title="Resumen Rápido"
