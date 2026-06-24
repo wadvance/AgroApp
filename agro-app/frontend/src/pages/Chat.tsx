@@ -207,9 +207,9 @@ const ChatPage: React.FC = () => {
                   const isUser = msg.sender === 'user';
                   return (
                     <div key={msg.id} style={{ display: 'flex', marginBottom: '16px', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
-                      <div style={{ maxWidth: '80%', padding: '12px', borderRadius: '12px', backgroundColor: isUser ? '#2E7D32' : '#FFFFFF', color: isUser ? '#FFFFFF' : '#000000', fontSize: '24px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', border: isUser ? 'none' : '2px solid #000000' }}>
+                      <div style={{ maxWidth: '80%', padding: '12px', borderRadius: '12px', backgroundColor: isUser ? '#2E7D32' : '#FFFFFF', color: isUser ? '#FFFFFF' : '#000000', fontSize: '24px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', border: isUser ? 'none' : '2px solid #000000', WebkitTextFillColor: isUser ? '#FFFFFF' : '#000000', opacity: 1 }}>
                         <div>{msg.text}</div>
-                        <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', color: isUser ? 'rgba(255,255,255,0.7)' : '#666666' }}>
+                        <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', color: isUser ? 'rgba(255,255,255,0.7)' : '#666666', WebkitTextFillColor: isUser ? 'rgba(255,255,255,0.7)' : '#666666' }}>
                           {msg.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                         </div>
                       </div>

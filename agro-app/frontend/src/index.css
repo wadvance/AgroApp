@@ -445,3 +445,12 @@ html.dark {
   border: 4px solid #00FF00 !important;
   background-color: #F5F5F5 !important;
 }
+
+/* Force text visibility on mobile */
+@media (max-width: 768px) {
+  div[style*="color: #000000"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    opacity: 1 !important;
+  }
+}
