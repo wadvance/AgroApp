@@ -164,7 +164,9 @@ const Diagnosis: React.FC = () => {
             <CardHeader
               title="Subir Imagen de Planta"
               subheader="Foto clara de hojas, tallos o frutos"
-              className="u-bg-green-primary-light u-text-green-primary-dark"
+              className="u-bg-green-primary-light"
+              titleTypographyProps={{ sx: { color: '#fff' } }}
+              subheaderTypographyProps={{ sx: { color: 'rgba(255,255,255,0.9)' } }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <PhotoCamera fontSize="large" color="primary" />
@@ -358,7 +360,9 @@ const Diagnosis: React.FC = () => {
               <CardHeader
                 title="Espera tu diagnóstico"
                 subheader="Sube una imagen de planta para comenzar el análisis"
-                className="u-bg-green-primary-light u-text-green-primary-dark"
+                className="u-bg-green-primary-light"
+                titleTypographyProps={{ sx: { color: '#fff' } }}
+                subheaderTypographyProps={{ sx: { color: 'rgba(255,255,255,0.9)' } }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Agriculture fontSize="large" color="primary" />
