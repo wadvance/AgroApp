@@ -11,7 +11,7 @@ import {
 import { firebaseService } from '../firebase';
 import BackButton from '../components/BackButton';
 
-const WEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY as string || '';
+const WEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY as string | undefined;
 const DEFAULT_LAT = 8.5;
 const DEFAULT_LON = -80.5;
 const PANAMA_CITIES: Record<string, { lat: number; lon: number }> = {
@@ -36,15 +36,23 @@ const Weather: React.FC = () => {
   const [usingMock, setUsingMock] = React.useState(false);
 
   const fetchRealWeather = async (lat: number, lon: number) => {
-    if (!WEATHER_API_KEY) return null;
+    if (!WEATHER_API_KEY) {
+      console.error('API Key missing:', WEATHER_API_KEY);
+      return null;
+    }
 
     try {
+      console.log('Fetching weather with API key:', WEATHER_API_KEY.substring(0, 8) + '...');
       const [currentRes, forecastRes] = await Promise.all([
         fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=es&appid=${WEATHER_API_KEY}`),
         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=es&cnt=40&appid=${WEATHER_API_KEY}`),
       ]);
 
-      if (!currentRes.ok || !forecastRes.ok) return null;
+      console.log('Current response status:', currentRes.status);
+      if (!currentRes.ok || !forecastRes.ok) {
+        console.error('API response not ok:', currentRes.status, forecastRes.status);
+        return null;
+      }
 
       const current = await currentRes.json();
       const forecastData = await forecastRes.json();
@@ -225,8 +233,8 @@ const Weather: React.FC = () => {
       </Box>
 
       {usingMock && (
-        <Alert severity="info" sx={{ mb: 2 }} icon={<Warning />}>
-          Mostrando datos simulados. Para datos reales, configura VITE_OPENWEATHER_API_KEY en .env
+        <Alert severity="warning" sx={{ mb: 2 }} icon={<Warning />}>
+          <strong>Datos simulados:</strong> La API key no está funcionando o no se encontró. Configura VITE_OPENWEATHER_API_KEY correctamente.
         </Alert>
       )}
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
