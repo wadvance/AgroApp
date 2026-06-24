@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agroapp-v3';
+const CACHE_NAME = 'agroapp-v4';
 const ASSETS = [
   '/AgroApp/',
   '/AgroApp/index.html',
@@ -42,4 +42,10 @@ self.addEventListener('activate', (event) => {
       )
     ).then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

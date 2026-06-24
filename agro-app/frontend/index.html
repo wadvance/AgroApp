@@ -24,9 +24,7 @@
               if (newSW) {
                 newSW.addEventListener('statechange', () => {
                   if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                    if (confirm('Nueva versión disponible. ¿Recargar para actualizar?')) {
-                      window.location.reload();
-                    }
+                    newSW.postMessage({ type: 'SKIP_WAITING' });
                   }
                 });
               }
