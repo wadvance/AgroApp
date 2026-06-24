@@ -432,10 +432,26 @@ const Seeds: React.FC = () => {
   };
 
   return (
-    <Box component="main" sx={{ p: 3 }}>
+    <Box component="main" sx={{ p: 2 }}>
       <BackButton />
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_, v) => setActiveTab(v)}
+          sx={{
+            '& .MuiTab-root': { 
+              fontSize: '0.8rem',
+              minHeight: 48,
+            },
+            '& .MuiTabs-indicator': { 
+              bgcolor: '#2E7D32',
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: '#2E7D32',
+              fontWeight: 'bold',
+            },
+          }}
+        >
           <Tab label="Identificador de Semillas" icon={<PhotoCamera />} iconPosition="start" />
           <Tab label="Calculadora de Siembra" icon={<Calculate />} iconPosition="start" />
         </Tabs>
@@ -449,14 +465,21 @@ const Seeds: React.FC = () => {
             <TextField
               fullWidth
               size="small"
-              placeholder="Buscar semillas por nombre, tipo o especie..."
+              placeholder="Buscar semillas por nombre..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
+              sx={{ 
+                bgcolor: '#FFFFFF',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#2E7D32', borderWidth: 2 },
+                  '&:hover fieldset': { borderColor: '#1B5E20' },
+                },
+              }}
               slotProps={{
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Search color="action" />
+                      <Search sx={{ color: '#2E7D32' }} />
                     </InputAdornment>
                   ),
                 },
@@ -475,14 +498,13 @@ const Seeds: React.FC = () => {
           <Button
             fullWidth
             variant="contained"
-            color="secondary"
             startIcon={<PhotoCamera />}
             onClick={() => document.getElementById('seed-camera-capture')?.click()}
             disabled={loading}
             size="large"
-            sx={{ py: 1.5 }}
+            sx={{ py: 1.5, bgcolor: '#388E3C', color: '#fff', '&:hover': { bgcolor: '#2E7D32' } }}
           >
-            📷 Tomar Foto
+            Tomar Foto
           </Button>
           </Grid>
           <Grid size={{ xs: 6, sm: 3, md: 2 }}>
@@ -499,6 +521,7 @@ const Seeds: React.FC = () => {
               startIcon={<CloudUpload />}
               onClick={() => document.getElementById('seed-image-upload')?.click()}
               disabled={loading}
+              sx={{ bgcolor: '#1976D2', color: '#fff', '&:hover': { bgcolor: '#1565C0' } }}
             >
               Subir Imagen
             </Button>
