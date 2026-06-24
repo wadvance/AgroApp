@@ -18,10 +18,7 @@ import { LocalFlorist, Agriculture, Send, Calculate, Cloud, Menu as MenuIcon } f
 const SIDEBAR_WIDTH = 280;
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = React.useState<any[]>([
-    { id: 1, text: 'PRUEBA-USUARIO', sender: 'user', timestamp: new Date() },
-    { id: 2, text: 'PRUEBA-BOT', sender: 'bot', timestamp: new Date() }
-  ]);
+  const [messages, setMessages] = React.useState<any[]>([]);
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
@@ -65,14 +62,36 @@ const ChatPage: React.FC = () => {
 
   const generateAIResponse = (message: string): string => {
     const lowerMsg = message.toLowerCase();
-    if (lowerMsg.includes('hola')) return 'Hola! Como puedo ayudarle con su cultivo hoy?';
-    if (lowerMsg.includes('riego')) return 'Para el riego necesito saber que cultivo tiene y la etapa de crecimiento.';
-    if (lowerMsg.includes('fertilizante')) return 'La fertilizacion depende del tipo de cultivo y analisis de suelo.';
-    if (lowerMsg.includes('plaga')) return 'Para diagnosticar plagas necesito que describa los sintomas.';
-    if (lowerMsg.includes('semilla')) return 'La variedad de semilla depende del clima y tipo de suelo de su zona.';
-    if (lowerMsg.includes('cosecha')) return 'Para estimar la cosecha necesito saber el tipo de cultivo y area.';
-    if (lowerMsg.includes('clima')) return 'El clima es importante para planificar siembras y cosechas.';
-    return 'Gracias por su consulta. Proporcioneme mas detalles sobre su cultivo.';
+    
+    if (lowerMsg.includes('hola') || lowerMsg.includes('buenos días') || lowerMsg.includes('buenas tardes') || lowerMsg.includes('buenas noches')) {
+      return '¡Hola! Soy su agrónomo virtual. ¿En qué puedo ayudarle hoy con su cultivo?';
+    }
+    
+    if (lowerMsg.includes('riego') || lowerMsg.includes('agua') || lowerMsg.includes('irrigar')) {
+      return 'Para determinar las necesidades de riego de su cultivo, necesito saber: ¿Qué tipo de cultivo tiene? ¿En qué etapa de crecimiento se encuentra? ¿Cuál es el tipo de suelo de su campo? Con esta información puedo calcular sus necesidades hídricas exactas.';
+    }
+    
+    if (lowerMsg.includes('fertilizante') || lowerMsg.includes('nutriente') || lowerMsg.includes('nitrógeno') || lowerMsg.includes('fósforo') || lowerMsg.includes('potasio')) {
+      return 'La fertilización adecuada depende del cultivo, etapa de crecimiento y análisis de suelo. ¿Podría proporcionarme esos detalles? También puedo ayudarle a interpretar resultados de análisis de suelo si los tiene disponibles.';
+    }
+    
+    if (lowerMsg.includes('plaga') || lowerMsg.includes('enfermedad') || lowerMsg.includes('hongo') || lowerMsg.includes('virus') || lowerMsg.includes('insecto')) {
+      return 'Para ayudarle con el diagnóstico de plagas o enfermedades, sería útil si pudiera describir los síntomas que observa o, mejor aún, compartir una imagen de las partes afectadas. ¿Qué cultivo tiene y qué síntomas está viendo?';
+    }
+    
+    if (lowerMsg.includes('semilla') || lowerMsg.includes('variedad') || lowerMsg.includes('siembra')) {
+      return 'La elección de la variedad de semilla adecuada es crucial para el éxito de su cultivo. Factores como el clima local, tipo de suelo, resistencia a enfermedades y ciclo de crecimiento deben considerarse. ¿Para qué cultivo está buscando recomendaciones de semilla?';
+    }
+    
+    if (lowerMsg.includes('cosecha') || lowerMsg.includes('rendimiento') || lowerMsg.includes('producción')) {
+      return 'Para estimar el rendimiento esperado de su cultivo, necesito conocer: el tipo de cultivo, área a sembrar, condiciones del suelo y historial de rendimientos en su zona. ¿Tiene esta información disponible?';
+    }
+    
+    if (lowerMsg.includes('clima') || lowerMsg.includes('tiempo') || lowerMsg.includes('temperatura') || lowerMsg.includes('helada') || lowerMsg.includes('sequía')) {
+      return 'El monitoreo climático es esencial para la toma de decisiones agrícolas. ¿Le gustaría que le proporcione el pronóstico del tiempo específico para su zona o información sobre cómo ciertas condiciones climáticas afectan su cultivo actual?';
+    }
+    
+    return 'Gracias por su consulta. Para brindarle una recomendación más precisa y personalizada, ¿podría proporcionarme más detalles sobre su cultivo específico, incluyendo tipo de planta, etapa de crecimiento, ubicación geográfica y cualquier problema particular que esté experimentando?';
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
