@@ -131,8 +131,8 @@ const themeOptions: ThemeOptions = {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'var(--bg-header)',
-          borderBottom: '1px solid var(--border-primary)',
+          backgroundColor: '#FFFFFF',
+          borderBottom: '1px solid #EEEEEE',
         },
       },
     },
@@ -140,8 +140,8 @@ const themeOptions: ThemeOptions = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: 'var(--bg-sidebar)',
-          borderRight: '1px solid var(--border-primary)',
+          backgroundColor: '#FAFAFA',
+          borderRight: '1px solid #EEEEEE',
         },
       },
     },
@@ -149,12 +149,12 @@ const themeOptions: ThemeOptions = {
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          borderRadius: 'var(--radius-md)',
+          borderRadius: '8px',
           margin: '0.25rem',
           '&.Mui-selected': {
-            backgroundColor: 'var(--green-primary-light)',
+            backgroundColor: '#4CAF50',
             '& .MuiListItemIcon-root, & .MuiListItemText-root': {
-              color: 'var(--green-primary-dark)',
+              color: '#1B5E20',
             },
           },
         },
@@ -164,10 +164,10 @@ const themeOptions: ThemeOptions = {
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: 'var(--gray-800)',
-          color: 'var(--white)',
-          fontSize: 'var(--font-size-sm)',
-          borderRadius: 'var(--radius-sm)',
+          backgroundColor: '#424242',
+          color: '#FFFFFF',
+          fontSize: '0.875rem',
+          borderRadius: '4px',
           padding: '0.5rem 0.75rem',
         },
       },
