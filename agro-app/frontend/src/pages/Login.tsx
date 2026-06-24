@@ -75,6 +75,8 @@ const Login: React.FC = () => {
         setError('El correo ya está registrado');
       } else if (code === 'auth/weak-password') {
         setError('La contraseña es muy débil');
+      } else if (code === 'auth/configuration-not-found') {
+        setError('Firebase Auth no está activado. Ve a Firebase Console > Authentication > Sign-in method y activa Email/Password.');
       } else {
         setError(err.message || 'Error al iniciar sesión');
       }
