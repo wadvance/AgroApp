@@ -125,20 +125,20 @@ const Dashboard: React.FC = () => {
         <Typography variant="h4" className="u-font-weight-semibold u-text-green-primary">
           Panel de Control
         </Typography>
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
           {!notifGranted && (
-            <Button variant="outlined" size="small" startIcon={<Notifications />} onClick={handleEnableNotifications}>
-              Activar Notificaciones
+            <Button variant="contained" color="info" size="small" startIcon={<Notifications />} onClick={handleEnableNotifications} sx={{ fontSize: '0.7rem' }}>
+              Activar Notif
             </Button>
           )}
           {notifGranted && (
-            <Chip icon={<Notifications />} label="Notificaciones activas" color="success" size="small" variant="outlined" />
+            <Chip icon={<Notifications />} label="Notif activas" color="success" size="small" variant="outlined" />
           )}
-          <Button variant="outlined" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length}>
-            Exportar Cultivos
+          <Button variant="contained" color="info" size="small" startIcon={<Download />} onClick={handleExport} disabled={!crops.length} sx={{ fontSize: '0.7rem' }}>
+            Export Cult
           </Button>
-          <Button variant="outlined" size="small" startIcon={<Download />} onClick={handleExportSeeds}>
-            Exportar Semillas
+          <Button variant="contained" color="info" size="small" startIcon={<Download />} onClick={handleExportSeeds} sx={{ fontSize: '0.7rem' }}>
+            Export Sem
           </Button>
         </Stack>
       </Box>
