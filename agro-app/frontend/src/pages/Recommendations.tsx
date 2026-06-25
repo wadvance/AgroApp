@@ -434,7 +434,7 @@ const Recommendations: React.FC = () => {
                 subheader="Seleccione los parámetros de su cultivo para obtener recomendaciones personalizadas"
                 className="u-bg-green-primary-light"
                 titleTypographyProps={{ sx: { color: '#000' } }}
-                subheaderTypographyProps={{ sx: { color: '#333' } }}
+                subheaderTypographyProps={{ sx: { color: '#000', fontWeight: 'bold' } }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Agriculture fontSize="large" color="primary" />
