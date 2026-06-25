@@ -141,17 +141,19 @@ const Seeds: React.FC = () => {
     setSearchQuery('');
 
     try {
-      const imagePath = `seed_images/${Date.now()}_${file.name}`;
-      const downloadUrl = await firebaseService.uploadFile(file, imagePath);
-      setImageUrl(downloadUrl);
+      const localUrl = URL.createObjectURL(file);
+      setImageUrl(localUrl);
 
-      const colorInfo = await getDominantColorFromImage(downloadUrl);
+      const colorInfo = await getDominantColorFromImage(localUrl);
       const matches = identifySeedByImage(colorInfo.color, colorInfo.shape, colorInfo.size);
       setMatchedSeeds(matches);
 
       if (matches.length > 0) {
         setSelectedSeed(matches[0]);
       }
+
+      const imagePath = `seed_images/${Date.now()}_${file.name}`;
+      firebaseService.uploadFile(file, imagePath).catch(() => {});
     } catch (error) {
       console.error('Error analyzing seed image:', error);
     } finally {
