@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agroapp-v4';
+const CACHE_NAME = 'agroapp-v5';
 const ASSETS = [
   '/AgroApp/',
   '/AgroApp/index.html',
