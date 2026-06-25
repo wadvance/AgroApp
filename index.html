@@ -5,35 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/AgroApp/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AgroApp - Gestión Agrícola Inteligente</title>
-    <link rel="manifest" href="/AgroApp/manifest.json">
     <meta name="theme-color" content="#2E7D32">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AgroApp">
-    <link rel="apple-touch-icon" href="/AgroApp/icons/icon-192x192.svg">
-    <script type="module" crossorigin src="/AgroApp/assets/index-Dg3SvbJS.js"></script>
+    <link rel="apple-touch-icon" href="/AgroApp/icons/png/icon-192x192.png">
+    <script type="module" crossorigin src="/AgroApp/assets/index-C6HrGZxi.js"></script>
     <link rel="stylesheet" crossorigin href="/AgroApp/assets/index-BsVWB983.css">
-  </head>
+  <link rel="manifest" href="/AgroApp/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/AgroApp/registerSW.js"></script></head>
   <body>
-    <div id="root"></div>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/AgroApp/sw.js?v=' + Date.now()).then((reg) => {
-            reg.addEventListener('updatefound', () => {
-              const newSW = reg.installing;
-              if (newSW) {
-                newSW.addEventListener('statechange', () => {
-                  if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                    newSW.postMessage({ type: 'SKIP_WAITING' });
-                  }
-                });
-              }
-            });
-          });
-        });
-      }
-    </script>
-    
+    <div id="root"></div>
   </body>
 </html>
