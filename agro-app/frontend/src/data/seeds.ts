@@ -674,13 +674,15 @@ export const seedsDatabase: Seed[] = [
 ];
 
 export const identifySeedByImage = (dominantColor: string, shape: string, size: string): Seed[] => {
-  return seedsDatabase.filter(seed => {
+  const scored = seedsDatabase.map(seed => {
     let score = 0;
     if (seed.color.toLowerCase().includes(dominantColor.toLowerCase())) score += 3;
     if (seed.shape.toLowerCase().includes(shape.toLowerCase())) score += 2;
     if (seed.size.toLowerCase().includes(size.toLowerCase())) score += 1;
-    return score >= 3;
+    return { seed, score };
   });
+  scored.sort((a, b) => b.score - a.score);
+  return scored.filter(s => s.score > 0).map(s => s.seed).slice(0, 5);
 };
 
 export const getSeedByName = (name: string): Seed | undefined => {
