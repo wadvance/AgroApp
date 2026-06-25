@@ -103,12 +103,24 @@ const Seeds: React.FC = () => {
   const [uploading, setUploading] = React.useState(false);
   const [savedSeeds, setSavedSeeds] = React.useState<any[]>([]);
   const [matchedSeeds, setMatchedSeeds] = React.useState<Seed[]>([]);
+  const [detectedColorInfo, setDetectedColorInfo] = React.useState<{ color: string; shape: string; size: string } | null>(null);
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [newSeed, setNewSeed] = React.useState({
     name: '', scientificName: '', type: '', color: '', shape: '', size: '',
     characteristics: '', imageDescription: '',
     plantingSeason: '', plantingDepth: '', plantingSpacing: '', plantingSoil: '',
   });
+
+  React.useEffect(() => {
+    if (detectedColorInfo && !matchedSeeds.length && imageUrl) {
+      setNewSeed(prev => ({
+        ...prev,
+        color: detectedColorInfo.color,
+        shape: detectedColorInfo.shape,
+        size: detectedColorInfo.size,
+      }));
+    }
+  }, [detectedColorInfo, matchedSeeds, imageUrl]);
 
   React.useEffect(() => {
     const loadSavedSeeds = async () => {
@@ -146,6 +158,7 @@ const Seeds: React.FC = () => {
       setImageUrl(localUrl);
 
       const colorInfo = await getDominantColorFromImage(localUrl);
+      setDetectedColorInfo(colorInfo);
       const matches = identifySeedByImage(colorInfo.color, colorInfo.shape, colorInfo.size);
       setMatchedSeeds(matches);
 
@@ -598,42 +611,35 @@ const Seeds: React.FC = () => {
                     No se pudo identificar la semilla
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    La imagen no coincide con ninguna semilla en la base de datos. Intenta tomar otra foto o agrega la semilla manualmente.
+                    La imagen no coincide con ninguna semilla en la base de datos. Completa el formulario para agregarla manualmente.
                   </Typography>
-                  <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
-                    <Button variant="outlined" color="primary" onClick={() => { setImageUrl(null); setMatchedSeeds([]); }}>
-                      Tomar otra foto
-                    </Button>
-                    <Button variant="contained" color="primary" startIcon={<Add />} onClick={() => setShowAddForm(!showAddForm)}>
-                      {showAddForm ? 'Cancelar' : 'Agregar manualmente'}
-                    </Button>
+                  <Button variant="outlined" color="primary" onClick={() => { setImageUrl(null); setMatchedSeeds([]); }}>
+                    Tomar otra foto
+                  </Button>
+                </CardContent>
+              </Card>
+              <Card sx={{ mt: 2 }}>
+                <CardHeader title="Agregar Nueva Semilla" className="u-bg-green-primary-light" titleTypographyProps={{ variant: 'subtitle1' }} />
+                <CardContent>
+                  <Stack spacing={2}>
+                    <TextField label="Nombre común" size="small" value={newSeed.name} onChange={(e) => setNewSeed(s => ({ ...s, name: e.target.value }))} />
+                    <TextField label="Nombre científico" size="small" value={newSeed.scientificName} onChange={(e) => setNewSeed(s => ({ ...s, scientificName: e.target.value }))} />
+                    <Stack direction="row" spacing={1}>
+                      <TextField label="Tipo" size="small" sx={{ flex: 1 }} value={newSeed.type} onChange={(e) => setNewSeed(s => ({ ...s, type: e.target.value }))} />
+                      <TextField label="Color" size="small" sx={{ flex: 1 }} value={newSeed.color} onChange={(e) => setNewSeed(s => ({ ...s, color: e.target.value }))} />
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                      <TextField label="Forma" size="small" sx={{ flex: 1 }} value={newSeed.shape} onChange={(e) => setNewSeed(s => ({ ...s, shape: e.target.value }))} />
+                      <TextField label="Tamaño" size="small" sx={{ flex: 1 }} value={newSeed.size} onChange={(e) => setNewSeed(s => ({ ...s, size: e.target.value }))} />
+                    </Stack>
+                    <TextField label="Características (separadas por coma)" size="small" value={newSeed.characteristics} onChange={(e) => setNewSeed(s => ({ ...s, characteristics: e.target.value }))} />
+                    <TextField label="Descripción de la imagen" size="small" multiline rows={2} value={newSeed.imageDescription} onChange={(e) => setNewSeed(s => ({ ...s, imageDescription: e.target.value }))} />
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Button variant="contained" color="primary" onClick={handleAddNewSeed}>Guardar Nueva Semilla</Button>
+                    </Box>
                   </Stack>
                 </CardContent>
               </Card>
-              {showAddForm && (
-                <Card sx={{ mt: 2 }}>
-                  <CardHeader title="Agregar Nueva Semilla" className="u-bg-green-primary-light" titleTypographyProps={{ variant: 'subtitle1' }} />
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <TextField label="Nombre común" size="small" value={newSeed.name} onChange={(e) => setNewSeed(s => ({ ...s, name: e.target.value }))} />
-                      <TextField label="Nombre científico" size="small" value={newSeed.scientificName} onChange={(e) => setNewSeed(s => ({ ...s, scientificName: e.target.value }))} />
-                      <Stack direction="row" spacing={1}>
-                        <TextField label="Tipo" size="small" sx={{ flex: 1 }} value={newSeed.type} onChange={(e) => setNewSeed(s => ({ ...s, type: e.target.value }))} />
-                        <TextField label="Color" size="small" sx={{ flex: 1 }} value={newSeed.color} onChange={(e) => setNewSeed(s => ({ ...s, color: e.target.value }))} />
-                      </Stack>
-                      <Stack direction="row" spacing={1}>
-                        <TextField label="Forma" size="small" sx={{ flex: 1 }} value={newSeed.shape} onChange={(e) => setNewSeed(s => ({ ...s, shape: e.target.value }))} />
-                        <TextField label="Tamaño" size="small" sx={{ flex: 1 }} value={newSeed.size} onChange={(e) => setNewSeed(s => ({ ...s, size: e.target.value }))} />
-                      </Stack>
-                      <TextField label="Características (separadas por coma)" size="small" value={newSeed.characteristics} onChange={(e) => setNewSeed(s => ({ ...s, characteristics: e.target.value }))} />
-                      <TextField label="Descripción de la imagen" size="small" multiline rows={2} value={newSeed.imageDescription} onChange={(e) => setNewSeed(s => ({ ...s, imageDescription: e.target.value }))} />
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Button variant="contained" color="primary" onClick={handleAddNewSeed}>Guardar Nueva Semilla</Button>
-                      </Box>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              )}
             </Box>
           ) : searchQuery && !selectedSeed ? (
             <Box>
