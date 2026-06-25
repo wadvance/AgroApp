@@ -6,17 +6,23 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agro-app/frontend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -24,7 +30,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          cat > agro-app/frontend/.env << EOF
+          cat > .env << EOF
           VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}
@@ -35,17 +41,18 @@ jobs:
           EOF
         shell: bash
 
-      - name: Install dependencies
-        run: npm ci
-        working-directory: agro-app/frontend
-
-      - name: Build
-        run: npm run build
-        working-directory: agro-app/frontend
-
-      - name: Deploy to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v3
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: agro-app/frontend/dist
-          force_orphan: true
+          path: agro-app/frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
