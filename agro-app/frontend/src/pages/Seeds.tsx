@@ -600,7 +600,7 @@ const Seeds: React.FC = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     La imagen no coincide con ninguna semilla en la base de datos. Intenta tomar otra foto o agrega la semilla manualmente.
                   </Typography>
-                  <Stack direction="row" spacing={1} justifyContent="center">
+                  <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
                     <Button variant="outlined" color="primary" onClick={() => { setImageUrl(null); setMatchedSeeds([]); }}>
                       Tomar otra foto
                     </Button>
