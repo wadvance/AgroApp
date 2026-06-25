@@ -21,8 +21,10 @@ import {
   Person,
   Save,
   Language,
+  Logout,
 } from '@mui/icons-material';
 import { useThemeMode } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 const Profile: React.FC = () => {
   const { darkMode, toggleDarkMode } = useThemeMode();
@@ -32,11 +34,16 @@ const Profile: React.FC = () => {
   const [location, setLocation] = React.useState('Chiriquí, Panamá');
   const [language, setLanguage] = React.useState('es');
   const [notifications, setNotifications] = React.useState(true);
+  const { logout } = useAuth();
   const [saved, setSaved] = React.useState(false);
 
   const handleSave = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -102,6 +109,21 @@ const Profile: React.FC = () => {
             {saved ? 'Guardado ✓' : 'Guardar Cambios'}
           </Button>
         </Box>
+
+        <Card className="u-bg-card u-shadow-sm">
+          <CardContent sx={{ textAlign: 'center', py: 3 }}>
+            <Button
+              variant="outlined"
+              color="error"
+              size="large"
+              startIcon={<Logout />}
+              onClick={handleLogout}
+              sx={{ px: 4 }}
+            >
+              Cerrar Sesión
+            </Button>
+          </CardContent>
+        </Card>
       </Stack>
     </Box>
   );
