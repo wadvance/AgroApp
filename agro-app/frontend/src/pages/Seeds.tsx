@@ -152,6 +152,7 @@ const Seeds: React.FC = () => {
     setScanning(true);
     setSearchResults([]);
     setSearchQuery('');
+    setShowAddForm(true);
 
     try {
       const localUrl = URL.createObjectURL(file);
@@ -224,6 +225,7 @@ const Seeds: React.FC = () => {
     setSearchResults([]);
     setSearchQuery('');
     setMatchedSeeds([]);
+    setShowAddForm(false);
   };
 
   const handleAddNewSeed = () => {
@@ -567,42 +569,80 @@ const Seeds: React.FC = () => {
               </CardContent>
             </Card>
           ) : displaySeeds.length > 0 ? (
-            <Card sx={{ height: '100%', overflow: 'auto' }}>
-              <CardHeader
-                title={searchResults.length > 0 ? `Resultados de búsqueda (${displaySeeds.length})` : `Semillas identificadas (${displaySeeds.length})`}
-                subheader={searchResults.length > 0 ? 'Coincidencias en la base de datos' : 'Basado en análisis de imagen'}
-                className="u-bg-green-primary-light u-text-green-primary-dark"
-              />
-              <CardContent sx={{ p: 1 }}>
-                {displaySeeds.map((seed) => (
-                  <Card
-                    key={seed.id}
-                    sx={{
-                      mb: 1,
-                      cursor: 'pointer',
-                      border: selectedSeed?.id === seed.id ? 2 : 0,
-                      borderColor: 'primary.main',
-                      '&:hover': { bgcolor: 'action.hover' },
-                    }}
-                    onClick={() => handleSelectSeed(seed)}
+            <Box>
+              <Card sx={{ height: '100%', overflow: 'auto' }}>
+                <CardHeader
+                  title={searchResults.length > 0 ? `Resultados de búsqueda (${displaySeeds.length})` : `Semillas identificadas (${displaySeeds.length})`}
+                  subheader={searchResults.length > 0 ? 'Coincidencias en la base de datos' : 'Basado en análisis de imagen'}
+                  className="u-bg-green-primary-light u-text-green-primary-dark"
+                />
+                <CardContent sx={{ p: 1 }}>
+                  {displaySeeds.map((seed) => (
+                    <Card
+                      key={seed.id}
+                      sx={{
+                        mb: 1,
+                        cursor: 'pointer',
+                        border: selectedSeed?.id === seed.id ? 2 : 0,
+                        borderColor: 'primary.main',
+                        '&:hover': { bgcolor: 'action.hover' },
+                      }}
+                      onClick={() => handleSelectSeed(seed)}
+                    >
+                      <CardContent sx={{ py: 1.5, px: 2 }}>
+                        <Typography variant="subtitle2" className="u-font-weight-semibold">
+                          {seed.name}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                          {seed.scientificName}
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
+                          <Chip label={seed.type} size="small" variant="outlined" sx={{ height: 20, '& .MuiChip-label': { fontSize: 11, px: 0.5 } }} />
+                          <Chip label={seed.color} size="small" variant="outlined" sx={{ height: 20, '& .MuiChip-label': { fontSize: 11, px: 0.5 } }} />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+              {imageUrl && (
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    startIcon={<Add />}
+                    onClick={() => setShowAddForm(!showAddForm)}
                   >
-                    <CardContent sx={{ py: 1.5, px: 2 }}>
-                      <Typography variant="subtitle2" className="u-font-weight-semibold">
-                        {seed.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                        {seed.scientificName}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
-                        <Chip label={seed.type} size="small" variant="outlined" sx={{ height: 20, '& .MuiChip-label': { fontSize: 11, px: 0.5 } }} />
-                        <Chip label={seed.color} size="small" variant="outlined" sx={{ height: 20, '& .MuiChip-label': { fontSize: 11, px: 0.5 } }} />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                ))}
-              </CardContent>
-            </Card>
-          ) : imageUrl && !matchedSeeds.length && !searchQuery ? (
+                    {showAddForm ? 'Cancelar' : 'Agregar semilla manualmente'}
+                  </Button>
+                  {showAddForm && (
+                    <Card sx={{ mt: 2 }}>
+                      <CardHeader title="Agregar Nueva Semilla" className="u-bg-green-primary-light" titleTypographyProps={{ variant: 'subtitle1' }} />
+                      <CardContent>
+                        <Stack spacing={2}>
+                          <TextField label="Nombre común" size="small" value={newSeed.name} onChange={(e) => setNewSeed(s => ({ ...s, name: e.target.value }))} />
+                          <TextField label="Nombre científico" size="small" value={newSeed.scientificName} onChange={(e) => setNewSeed(s => ({ ...s, scientificName: e.target.value }))} />
+                          <Stack direction="row" spacing={1}>
+                            <TextField label="Tipo" size="small" sx={{ flex: 1 }} value={newSeed.type} onChange={(e) => setNewSeed(s => ({ ...s, type: e.target.value }))} />
+                            <TextField label="Color" size="small" sx={{ flex: 1 }} value={newSeed.color} onChange={(e) => setNewSeed(s => ({ ...s, color: e.target.value }))} />
+                          </Stack>
+                          <Stack direction="row" spacing={1}>
+                            <TextField label="Forma" size="small" sx={{ flex: 1 }} value={newSeed.shape} onChange={(e) => setNewSeed(s => ({ ...s, shape: e.target.value }))} />
+                            <TextField label="Tamaño" size="small" sx={{ flex: 1 }} value={newSeed.size} onChange={(e) => setNewSeed(s => ({ ...s, size: e.target.value }))} />
+                          </Stack>
+                          <TextField label="Características (separadas por coma)" size="small" value={newSeed.characteristics} onChange={(e) => setNewSeed(s => ({ ...s, characteristics: e.target.value }))} />
+                          <TextField label="Descripción de la imagen" size="small" multiline rows={2} value={newSeed.imageDescription} onChange={(e) => setNewSeed(s => ({ ...s, imageDescription: e.target.value }))} />
+                          <Box sx={{ textAlign: 'center' }}>
+                            <Button variant="contained" color="primary" onClick={handleAddNewSeed}>Guardar Nueva Semilla</Button>
+                          </Box>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  )}
+                </Box>
+              )}
+            </Box>
+          ) : imageUrl && !searchQuery ? (
             <Box>
               <Card sx={{ mt: 2 }}>
                 <CardContent sx={{ textAlign: 'center', py: 3 }}>

@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import { Outlet, NavLink, useResolvedPath, useMatch, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
+import InstallPrompt from '../components/InstallPrompt';
 
 const DRAWER_WIDTH_FULL = 260;
 const DRAWER_WIDTH_MINI = 64;
@@ -320,6 +321,7 @@ const MainLayout: React.FC = () => {
         }}
       >
         <Outlet />
+        <InstallPrompt />
       </Box>
 
       {isSmallMobile && (
