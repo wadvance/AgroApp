@@ -93,7 +93,7 @@ const Calculator: React.FC = () => {
 
   return (
     <Box component="main" sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom className="u-font-weight-semibold u-text-green-primary">
+      <Typography variant="h4" gutterBottom className="u-font-weight-semibold">
         Calculadora de Rendimiento Económico
       </Typography>
       
@@ -103,7 +103,7 @@ const Calculator: React.FC = () => {
           <Card className="u-bg-card u-shadow-sm u-transition-normal">
             <CardHeader
               title="Parámetros de Cálculo"
-              className="u-bg-green-primary-light u-text-green-primary-dark"
+              className="u-bg-green-primary-light"
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Calculate fontSize="large" color="primary" />
@@ -397,7 +397,7 @@ const Calculator: React.FC = () => {
               <CardHeader
                 title="Ingrese los parámetros para calcular"
                 subheader="Complete los campos abaixo para obtener un análisis económico de su cultivo"
-                className="u-bg-green-primary-light u-text-green-primary-dark"
+                className="u-bg-green-primary-light"
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Agriculture fontSize="large" color="primary" />
