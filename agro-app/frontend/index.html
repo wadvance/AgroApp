@@ -17,19 +17,10 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/AgroApp/sw.js?v=' + Date.now()).then((reg) => {
-            reg.addEventListener('updatefound', () => {
-              const newSW = reg.installing;
-              if (newSW) {
-                newSW.addEventListener('statechange', () => {
-                  if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                    newSW.postMessage({ type: 'SKIP_WAITING' });
-                  }
-                });
-              }
-            });
-          });
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          for (var i = 0; i < regs.length; i++) {
+            regs[i].unregister();
+          }
         });
       }
     </script>
