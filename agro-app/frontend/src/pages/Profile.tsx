@@ -29,7 +29,7 @@ const Profile: React.FC = () => {
   const [name, setName] = React.useState('Juan Pérez');
   const [email, setEmail] = React.useState('juan@agroapp.com');
   const [farmName, setFarmName] = React.useState('Finca El Progreso');
-  const [location, setLocation] = React.useState('Córdoba, Argentina');
+  const [location, setLocation] = React.useState('Chiriquí, Panamá');
   const [language, setLanguage] = React.useState('es');
   const [notifications, setNotifications] = React.useState(true);
   const [saved, setSaved] = React.useState(false);
